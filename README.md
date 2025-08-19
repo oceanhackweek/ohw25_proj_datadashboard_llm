@@ -45,8 +45,10 @@ Have a functioning interactive dashbord
 Build UI, connect llm to one data set for initial testing, extend as far as we can 
 
 ## Results/Findings
+In the works...
 
 ## Lessons Learned
+In the works...
 
 ## References
-
+In the works...
