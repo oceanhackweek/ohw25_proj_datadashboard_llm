@@ -17,7 +17,7 @@ preserve relative paths, but the dataset does not need to be added to git/GitHub
 
 You can start with a simple structure and as you progress you can refine it to contain more components. [Here](https://cookiecutter-data-science.drivendata.org/#directory-structure) is an example of a more elaborate structure for a data science project.
 
-## Project Name
+## Data Dashboard with LLM: Plotting
 
 ## One-line Description
 
@@ -27,9 +27,12 @@ You can start with a simple structure and as you progress you can refine it to c
 
 | Name                | Role                |
 |---------------------|---------------------|
-| Participant 1       | Project Facilitator |
-| Participant 2       | Participant         |
-| Participant 3       | Participant         |
+| Boris Shapkin       | Project Facilitator |
+| Liangtong Wei       | Participant         |
+| Finn Wimberly       | Participant         |
+| Ava Wessel          | Participant         |
+| Aidan Lewis         | Participant         |
+| Dinal Meecle        | Participant         |
 
 ## Planning
 
