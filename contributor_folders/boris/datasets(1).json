@@ -1,0 +1,284 @@
+{
+  "datasets": [
+    {
+      "name": "Indian Ocean grid",
+      "description": "Our Indian Ocean IO.zarr is a 1972-2022 blended dataset for the Arabian Sea and Bay of Bengal formated as a .zarr file, containing daily cleaned and interpolated data from variables across multiple sources, mostly from processed NASA/NOAA and Copernicus collections and the ERA5 reanalysis products.",
+      "temporal_bounds": {
+        "start_time": "1979-01-01",
+        "end_time": "2022-12-31"
+      },
+      "spatial_bounds": {
+        "min_lat": -90.0,
+        "min_lon": -180.0,
+        "max_lat": 90.0,
+        "max_lon": 180.0
+      },
+      "variables": {
+        "variables": [
+          {
+            "standard_name": "adt",
+            "description": "Sea surface height above geoid (SL_TAC)",
+            "units": "m"
+          },
+          {
+            "standard_name": "air_temp",
+            "description": "Air temperature at 2 meters above the surface (ERA5)",
+            "units": "K"
+          },
+          {
+            "standard_name": "mlotst",
+            "description": "Mean ocean mixed layer thickness (GLORY)",
+            "units": "m"
+          },
+          {
+            "standard_name": "sla",
+            "description": "Sea level anomaly (SL_TAC)",
+            "units": "m"
+          },
+          {
+            "standard_name": "so",
+            "description": "Sea salinity concentration (GLORY)",
+            "units": "PSU"
+          },
+          {
+            "standard_name": "sst",
+            "description": "Sea surface temperature (ERA5)",
+            "units": "K"
+          },
+          {
+            "standard_name": "topo",
+            "description": "Topography (SRTM30+)",
+            "units": "m"
+          },
+          {
+            "standard_name": "u_curr",
+            "description": "U-component of total surface currents (OSCAR)",
+            "units": "m/s"
+          },
+          {
+            "standard_name": "v_curr",
+            "description": "V-component of total surface currents (OSCAR)",
+            "units": "m/s"
+          },
+          {
+            "standard_name": "ug_curr",
+            "description": "U-component of geostrophic surface currents (OSCAR)",
+            "units": "m/s"
+          },
+          {
+            "standard_name": "vg_curr",
+            "description": "V-component of geostrophic surface currents (OSCAR)",
+            "units": "m/s"
+          },
+          {
+            "standard_name": "u_wind",
+            "description": "U-component of surface wind (ERA5)",
+            "units": "m/s"
+          },
+          {
+            "standard_name": "v_wind",
+            "description": "V-component of surface wind (ERA5)",
+            "units": "m/s"
+          },
+          {
+            "standard_name": "curr_speed",
+            "description": "Total current speed (derived from u_curr and v_curr)",
+            "units": "m/s"
+          },
+          {
+            "standard_name": "curr_dir",
+            "description": "Total current direction (derived from u_curr and v_curr, OSCAR)",
+            "units": "degrees"
+          },
+          {
+            "standard_name": "wind_speed",
+            "description": "Surface wind speed (derived from u_wind and v_wind)",
+            "units": "m/s"
+          },
+          {
+            "standard_name": "wind_dir",
+            "description": "Surface wind direction (derived from u_wind and v_wind)",
+            "units": "degrees"
+          },
+          {
+            "standard_name": "CHL_cmes-level3",
+            "description": "Multi-sensor chlorophyll-a concentration (GlobColour, gappy L3)",
+            "units": "mg/m^3"
+          },
+          {
+            "standard_name": "CHL_cmes_flags-level3",
+            "description": "Chlorophyll-a data flags: 0=land, 1=observed, 2=NA (GlobColour)",
+            "units": "None"
+          },
+          {
+            "standard_name": "CHL_cmes_uncertainty-level3",
+            "description": "Chlorophyll-a concentration uncertainty (GlobColour, L3)",
+            "units": "%"
+          },
+          {
+            "standard_name": "CHL_cmes-gapfree",
+            "description": "Gap-filled chlorophyll-a concentration (GlobColour, L4)",
+            "units": "mg/m^3"
+          },
+          {
+            "standard_name": "CHL_cmes_flags-gapfree",
+            "description": "Chlorophyll-a data flags: 0=land, 1=observed, 2=interpolated, 3=NA (GlobColour, gap-free)",
+            "units": "None"
+          },
+          {
+            "standard_name": "CHL_cmes_uncertainty-gapfree",
+            "description": "Chlorophyll-a concentration uncertainty (GlobColour, gap-free)",
+            "units": "%"
+          },
+          {
+            "standard_name": "CHL_cci",
+            "description": "Multi-sensor chlorophyll-a concentration (CCI)",
+            "units": "mg/m^3"
+          },
+          {
+            "standard_name": "CHL_cci_uncertainty",
+            "description": "Chlorophyll-a concentration uncertainty (CCI, rmsd)",
+            "units": "mg/m^3"
+          },
+          {
+            "standard_name": "CHL_dinoef",
+            "description": "Gap-free chlorophyll-a concentration (DINEOF)",
+            "units": "mg/m^3"
+          },
+          {
+            "standard_name": "CHL_dinoef_uncertainty",
+            "description": "Chlorophyll-a concentration uncertainty (DINEOF, rmsd)",
+            "units": "mg/m^3"
+          },
+          {
+            "standard_name": "CHL_dinoef_flag",
+            "description": "Chlorophyll-a data flag (DINEOF)",
+            "units": "None"
+          }
+        ]
+      },
+      "access": {
+        "platform": "gcs",
+        "path": "gcs://nmfs_odp_nwfsc/CB/mind_the_chl_gap/IO.zarr",
+        "access_function": "load_indian_ocean",
+        "other_args": {}
+      }
+    },
+    {
+      "name": "ERA5 Atmospheric Surface Analysis",
+      "description": "Global ERA5 atmospheric surface analysis on a 0.25°x0.25° grid from 90N to 90S, 0E to 359.75E. Created by combining many NetCDF files into a single Icechunk store.",
+      "temporal_bounds": {
+        "start_time": "1975-01-01",
+        "end_time": "2024-12-31"
+      },
+      "spatial_bounds": {
+        "min_lat": -90.0,
+        "min_lon": 0.0,
+        "max_lat": 90.0,
+        "max_lon": 359.75
+      },
+      "variables": {
+        "variables": [
+          {
+            "standard_name": "blh",
+            "description": "Boundary layer height",
+            "units": "m"
+          },
+          {
+            "standard_name": "d2",
+            "description": "2 metre dewpoint temperature",
+            "units": "K"
+          },
+          {
+            "standard_name": "cape",
+            "description": "Convective available potential energy",
+            "units": "J kg**-1"
+          },
+          {
+            "standard_name": "mslp",
+            "description": "Mean sea level pressure",
+            "units": "Pa"
+          },
+          {
+            "standard_name": "skt",
+            "description": "Skin temperature",
+            "units": "K"
+          },
+          {
+            "standard_name": "swvl1",
+            "description": "Volumetric soil water layer 1",
+            "units": "m**3 m**-3"
+          },
+          {
+            "standard_name": "stl1",
+            "description": "Soil temperature level 1",
+            "units": "K"
+          },
+          {
+            "standard_name": "t2",
+            "description": "2 metre temperature",
+            "units": "K"
+          },
+          {
+            "standard_name": "tcc",
+            "description": "Total cloud cover",
+            "units": "(0-1)"
+          },
+          {
+            "standard_name": "sd",
+            "description": "Snow depth",
+            "units": "m of water equivalent"
+          },
+          {
+            "standard_name": "tcw",
+            "description": "Total column water",
+            "units": "kg m**-2"
+          },
+          {
+            "standard_name": "sp",
+            "description": "Surface pressure",
+            "units": "Pa"
+          },
+          {
+            "standard_name": "u10",
+            "description": "10 metre U wind component",
+            "units": "m s**-1"
+          },
+          {
+            "standard_name": "u100",
+            "description": "100 metre U wind component",
+            "units": "m s**-1"
+          },
+          {
+            "standard_name": "v10",
+            "description": "10 metre V wind component",
+            "units": "m s**-1"
+          },
+          {
+            "standard_name": "v100",
+            "description": "100 metre V wind component",
+            "units": "m s**-1"
+          },
+          {
+            "standard_name": "sst",
+            "description": "Sea surface temperature",
+            "units": "K"
+          },
+          {
+            "standard_name": "tcwv",
+            "description": "Total column water vapour",
+            "units": "kg m**-2"
+          }
+        ]
+      },
+      "access": {
+        "platform": "arraylake",
+        "path": "earthmover-public/era5-surface-aws",
+        "access_function": "",
+        "other_args": {
+          "group": "spatial"
+        }
+      }
+    }
+  ]
+}
