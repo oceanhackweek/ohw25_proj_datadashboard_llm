@@ -104,9 +104,9 @@ def _(user_key):
 
 
 @app.cell
-def _(ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo, widget):
+def _(ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo, user_key, widget):
     def my_model(messages, widget):
-        HF_TOKEN = "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"
+        HF_TOKEN = user_key
 
         map_frame = widget.value["view_state"]["extent"]
 
