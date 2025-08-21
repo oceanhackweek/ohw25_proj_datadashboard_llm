@@ -1,7 +1,10 @@
 import os
+import json
 from langchain_community.vectorstores import Chroma
+from langchain.schema import Document
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 import hf_config
+
 
 
 def read_examples(filename: str):
@@ -18,7 +21,7 @@ doc_embedder = HuggingFaceEndpointEmbeddings(
                                         model="Qwen/Qwen3-Embedding-8B",
                                         task="feature-extraction",
                                         model_kwargs={"normalize": True},
-                                        hhuggingfacehub_api_token=hf_config.get_hf_token()
+                                        huggingfacehub_api_token=hf_config.get_hf_token()
                                     )
 def create_db_examples():
 

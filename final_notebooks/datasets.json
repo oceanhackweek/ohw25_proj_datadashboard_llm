@@ -8,10 +8,10 @@
         "end_time": "2022-12-31"
       },
       "spatial_bounds": {
-        "min_lat": -90.0,
-        "min_lon": -180.0,
-        "max_lat": 90.0,
-        "max_lon": 180.0
+        "min_lat": -12.0,
+        "min_lon": 42.0,
+        "max_lat": 32.0,
+        "max_lon": 102.0
       },
       "variables": {
         "variables": [
@@ -160,7 +160,7 @@
       "access": {
         "platform": "gcs",
         "path": "gcs://nmfs_odp_nwfsc/CB/mind_the_chl_gap/IO.zarr",
-        "access_function": "load_indian_ocean",
+        "access_function": "load_climate_data",
         "other_args": {}
       }
     },
@@ -219,7 +219,7 @@
       "access": {
         "platform": "aws",
         "path": "s3://mur-sst/zarr-v1/",
-        "access_function": "load_mur",
+        "access_function": "load_climate_data",
         "other_args": {}
       }
     },
@@ -331,12 +331,10 @@
         ]
       },
       "access": {
-        "platform": "arraylake",
-        "path": "earthmover-public/era5-surface-aws",
-        "access_function": "",
-        "other_args": {
-          "group": "spatial"
-        }
+        "platform": "gcs",
+        "path": "gs://weatherbench2/datasets/era5/1959-2023_01_10-6h-240x121_equiangular_with_poles_conservative.zarr",
+        "access_function": "load_climate_data",
+        "other_args": {}
       }
     }
   ]

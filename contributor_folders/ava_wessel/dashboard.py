@@ -17,12 +17,46 @@ def _():
     from langchain.chains import ConversationalRetrievalChain
     from langchain.schema import Document
     from langchain_openai import ChatOpenAI
+    from langchain.prompts import MessagesPlaceholder
     from langchain_core.output_parsers import StrOutputParser
+    from langchain.agents import AgentExecutor, create_tool_calling_agent
+    import json
+    import hf_config
+
 
     current_directory = os.getcwd()
     print(current_directory)
     from dotenv import load_dotenv
-    return ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo, ol
+    return (
+        AgentExecutor,
+        ChatOpenAI,
+        ChatPromptTemplate,
+        MessagesPlaceholder,
+        StrOutputParser,
+        create_tool_calling_agent,
+        hf_config,
+        mo,
+        ol,
+    )
+
+
+@app.cell
+def _(hf_config):
+    # Set token once in your notebook
+    my_token = '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'
+    hf_config.set_hf_token(my_token)
+    LANGSMITH_TRACING="true"
+    LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
+    LANGSMITH_API_KEY="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"
+    LANGSMITH_PROJECT="ohw_llm"
+    return
+
+
+@app.cell
+def _():
+    from db_creation import create_db_examples
+    vector_store_hf = create_db_examples()
+    return
 
 
 @app.cell
@@ -75,12 +109,12 @@ def _(mo):
 
 @app.cell
 def _(widget):
-    x, y = 0,0
+    point_selected = 0,0
+    x,y = 0,0
     if len(widget.value["clicked"]) > 0 :
         point_selected = widget.value["clicked"]['coordinate']
         x, y = point_selected
-
-    return x, y
+    return point_selected, x, y
 
 
 @app.cell
@@ -161,6 +195,67 @@ def _(ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo, user_key, widget):
         return response
 
     mo.ui.chat(lambda messages: my_model(messages, widget))
+    return (my_model,)
+
+
+@app.cell
+def _(
+    AgentExecutor,
+    ChatOpenAI,
+    ChatPromptTemplate,
+    MessagesPlaceholder,
+    create_tool_calling_agent,
+    hf_config,
+    mo,
+    my_model,
+    point_selected,
+    widget,
+):
+    def my_model2(messages, widget):
+        question = messages[-1].content   
+        my_token = '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'
+        hf_config.set_hf_token(my_token)
+
+        map_frame = widget.value["view_state"]["extent"]
+        if len(point_selected) > 1 :
+            point_selected = widget.value['clicked']['coordinate']
+        else:
+            point_selected = list([0, 0])
+    
+        from adviser_tool import create_adviser_tool
+        adviser_tool_llm = create_adviser_tool()
+        tools = [adviser_tool_llm]
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", f"You are an expert in climate data analysis, you have adviser tool, which can help you to asnwer user's questions about variables/datasets. If the question about data, use only information from adviser_tool. If the {map_frame} or {point_selected} is no zero, zero, answer questions about the data from this selected area. "),
+                ("user", "{input}"),
+                MessagesPlaceholder(variable_name="agent_scratchpad"),
+            ]
+        )
+        llm = ChatOpenAI(
+            base_url="https://router.huggingface.co/v1",
+            api_key=hf_config.get_hf_token(),
+            model="openai/gpt-oss-120b:fireworks-ai"  
+        )
+
+        # Define the agent
+        agent = create_tool_calling_agent(
+            llm=llm,
+            tools=tools,
+            prompt=prompt,
+        )
+
+        # Create the executor
+        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+        result = agent_executor.invoke({"input": question})
+        return result
+
+    mo.ui.chat(lambda messages: my_model(messages, widget))
+    return
+
+
+@app.cell
+def _():
     return
 
 
