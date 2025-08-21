@@ -43,11 +43,11 @@ def _():
 @app.cell
 def _(hf_config):
     # Set token once in your notebook
-    my_token = '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'
+    my_token = ''
     hf_config.set_hf_token(my_token)
     LANGSMITH_TRACING="true"
     LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
-    LANGSMITH_API_KEY="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"
+    LANGSMITH_API_KEY=''
     LANGSMITH_PROJECT="ohw_llm"
     return
 
@@ -213,7 +213,7 @@ def _(
 ):
     def my_model2(messages, widget):
         question = messages[-1].content   
-        my_token = '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'
+        my_token = ''
         hf_config.set_hf_token(my_token)
 
         map_frame = widget.value["view_state"]["extent"]
@@ -221,7 +221,7 @@ def _(
             point_selected = widget.value['clicked']['coordinate']
         else:
             point_selected = list([0, 0])
-    
+
         from adviser_tool import create_adviser_tool
         adviser_tool_llm = create_adviser_tool()
         tools = [adviser_tool_llm]
