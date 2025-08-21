@@ -10,16 +10,23 @@ def _():
     import pandas as pd 
     import geopandas as gpd
     import openlayers as ol
-    from dotenv import load_dotenv
-    load_dotenv()
-
+    import os
     from langchain_community.vectorstores import Chroma
     from langchain.prompts import ChatPromptTemplate
     from langchain.chains import ConversationalRetrievalChain
     from langchain.schema import Document
     from langchain_openai import ChatOpenAI
     from langchain_core.output_parsers import StrOutputParser
+    current_directory = os.getcwd()
+    print(current_directory)
     return ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo, ol
+
+
+@app.cell
+def _():
+    from dotenv import load_dotenv
+    load_dotenv()
+    return
 
 
 @app.cell
@@ -33,7 +40,6 @@ def _(mo):
             Data Dashboard with Chatbot!
         </h1>
     </div>
-
     """
     )
     return
@@ -75,40 +81,45 @@ def _(mo, widget):
         f"Longitude min: {round(map_frame[0], 2)}, Longitude max: {round(map_frame[2], 2)}  \n"
         f"Latitude min: {round(map_frame[1], 2)}, Latitude max: {round(map_frame[3], 2)}"
     )
-    return (map_frame,)
-
-
-@app.cell
-def _():
     return
 
 
 @app.cell
-def _(
-    ChatOpenAI,
-    ChatPromptTemplate,
-    StrOutputParser,
-    map_boundaries,
-    map_frame,
-    mo,
-    os,
-):
-    def my_model(messages, config):
-        HF_TOKEN = os.environ['HF_TOKEN']
+def _(mo):
+    text_area = mo.ui.text_area(placeholder="Enter HF Token ...")
+    text_area
+    return (text_area,)
 
-        def map_boundaries(area):
-            if len(map_frame) > 0:
-                return print(map_frame)
+
+@app.cell
+def _(text_area):
+    user_key = text_area.value.strip()
+    return (user_key,)
+
+
+@app.cell
+def _(user_key):
+    user_key
+    return
+
+
+@app.cell
+def _(ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo, widget):
+    def my_model(messages, widget):
+        HF_TOKEN = "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"
+
+        map_frame = widget.value["view_state"]["extent"]
 
         llm = ChatOpenAI(
             base_url="https://router.huggingface.co/v1",
             api_key=HF_TOKEN,
             model="openai/gpt-oss-20b:fireworks-ai"
         )
+        question = messages[-1]["content"]
 
         prompt = ChatPromptTemplate.from_messages([
             ("system", "You are an AI assistant specializing in ocean data. "
-                       "You have access to the map boundaries from the UI map."
+                       "he current map boundaries are: {map_frame}."
                        "that the user can draw."),
             ("human", "{question}")
         ])
@@ -122,7 +133,7 @@ def _(
 
         return response
 
-    mo.ui.chat(my_model, map_boundaries(map_frame))
+    mo.ui.chat(lambda messages: my_model(messages, widget))
     return
 
 
