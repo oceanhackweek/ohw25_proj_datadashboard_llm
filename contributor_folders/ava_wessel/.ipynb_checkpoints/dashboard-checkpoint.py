@@ -9,10 +9,18 @@ def _():
     import marimo as mo
     import pandas as pd 
     import folium
-    import leafmap.maplibregl as leafmap
-    #import leafmap.foliumap as leafmap
-    from maplibre.plugins import MapboxDrawControls, MapboxDrawOptions
-    return MapboxDrawControls, MapboxDrawOptions, leafmap, mo
+    from folium.plugins import Draw
+    import geopandas as gpd
+    from shapely.geometry import box
+    from IPython.display import display
+
+    from langchain_community.vectorstores import Chroma
+    from langchain.prompts import ChatPromptTemplate
+    from langchain.chains import ConversationalRetrievalChain
+    from langchain.schema import Document
+    from langchain_openai import ChatOpenAI
+    from langchain_core.output_parsers import StrOutputParser
+    return ChatOpenAI, ChatPromptTemplate, Draw, StrOutputParser, folium, mo
 
 
 @app.cell
@@ -27,49 +35,59 @@ def _(mo):
     return
 
 
-@app.cell(hide_code=True)
-def _(MapboxDrawControls, MapboxDrawOptions, leafmap):
-    test = leafmap.Map(center=[0, 0], zoom=1, style="positron")
-    draw_options = MapboxDrawOptions(
-        display_controls_default=False,
-        controls=MapboxDrawControls(polygon=True, line_string=False, point=True, trash=True),
-    )
-    test.add_draw_control(draw_options)
-    test
-    return (test,)
-
-
 @app.cell
-def _(test):
-    map_data = test.draw_features_selected
-
-    coordinates_list = 0
-
-    if len(map_data) > 0:
-        coordinates_list = map_data[0]['geometry']['coordinates']
-        #coordinates = [coord for sublist in coordinates_list for coord in sublist]
-        #coordinates_list = pd.DataFrame(coordinates, columns=['longitude', 'latitude'])
-    else: 
-        print("No Selected Region")
-    coordinates_list
+def _(Draw, folium):
+    m = folium.Map(location=[0, 0], zoom_start=2)
+    draw1 = Draw(export= True,  filename='map_selection.geojson',
+        draw_options={
+            'polyline': False,
+            'polygon': False,
+            'circle': False,
+            'circlemarker': False,
+            'marker': False,
+            'rectangle': True
+        },
+        edit_options={'edit': False}
+    )
+    draw1.add_to(m)
+    m
     return
 
 
 @app.cell
-def _(context, mo, query_llm):
+def _(ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo):
     def my_model(messages, config):
-        question = messages[-1].content
-        prompt = f"Context: {context}\n\nQuestion: {question}\n\nAnswer:"
-        # Query your own model or third-party models
-        response = query_llm(prompt, config)
+        HF_TOKEN = "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"
+
+        import pandas as pd
+        rectangles_df = pd.DataFrame(columns=['southwest', 'northeast'])
+
+    # Example function to update rectangles (hooked to ipyleaflet DrawControl)
+    def add_rectangle(sw, ne):
+        rectangles_df.loc[len(rectangles_df)] = [sw, ne]
+
+        llm = ChatOpenAI(
+            base_url="https://router.huggingface.co/v1",
+            api_key=HF_TOKEN,
+            model="openai/gpt-oss-20b:fireworks-ai"
+        )
+
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", "You are an AI assistant. "
+                       "You have access to a map selection polygon "
+                       "that the user can draw."),
+            ("human", "{question}")
+        ])
+
+        chain = prompt | llm | StrOutputParser()
+
+        response = chain.invoke({"question": "{question}"})
+
+
+
         return response
 
     mo.ui.chat(my_model)
-    return
-
-
-@app.cell
-def _():
     return
 
 
