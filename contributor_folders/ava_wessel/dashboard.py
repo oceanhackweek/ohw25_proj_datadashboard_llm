@@ -13,7 +13,6 @@ def _():
     import geopandas as gpd
     from shapely.geometry import box
     from IPython.display import display
-    import json
 
     from langchain_community.vectorstores import Chroma
     from langchain.prompts import ChatPromptTemplate
@@ -21,15 +20,7 @@ def _():
     from langchain.schema import Document
     from langchain_openai import ChatOpenAI
     from langchain_core.output_parsers import StrOutputParser
-    return (
-        ChatOpenAI,
-        ChatPromptTemplate,
-        Draw,
-        StrOutputParser,
-        folium,
-        json,
-        mo,
-    )
+    return ChatOpenAI, ChatPromptTemplate, Draw, StrOutputParser, folium, mo
 
 
 @app.cell
@@ -47,7 +38,7 @@ def _(mo):
 @app.cell
 def _(Draw, folium):
     m = folium.Map(location=[0, 0], zoom_start=2)
-    draw = Draw(export= True,  filename='map_selection.geojson',
+    draw1 = Draw(export= True,  filename='map_selection.geojson',
         draw_options={
             'polyline': False,
             'polygon': False,
@@ -58,36 +49,21 @@ def _(Draw, folium):
         },
         edit_options={'edit': False}
     )
-    draw.add_to(m)
-
+    draw1.add_to(m)
     m
     return
 
 
 @app.cell
-def _(json):
-    def read_json_file(file_path):
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-        return data
-    return
-
-
-@app.cell
-def _(
-    ChatOpenAI,
-    ChatPromptTemplate,
-    StrOutputParser,
-    geojson_file,
-    mo,
-    summarize_geojson,
-):
+def _(ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo):
     def my_model(messages, config):
-        HF_TOKEN = "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"
+        HF_TOKEN = "hf_otwSnWQTiDXTUhDoUInHcDjuTKEGKJbuvjd"
 
-        polygon_summary = ""
-        if geojson_file:
-            polygon_summary = summarize_geojson(geojson_file)
+        import pandas as pd
+        rectangles_df = pd.DataFrame(columns=['southwest', 'northeast'])
+
+        def add_rectangle(sw, ne):
+            rectangles_df.loc[len(rectangles_df)] = [sw, ne]
 
         llm = ChatOpenAI(
             base_url="https://router.huggingface.co/v1",
@@ -101,7 +77,6 @@ def _(
                        "that the user can draw."),
             ("human", "{question}")
         ])
-        allow_attachments=['map_selection.geojson']
 
         chain = prompt | llm | StrOutputParser()
 
@@ -111,7 +86,7 @@ def _(
 
         return response
 
-    mo.ui.chat(my_model, allow_attachments=['map_selection.geojson'])
+    mo.ui.chat(my_model)
     return
 
 

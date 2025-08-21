@@ -9,24 +9,18 @@ def _():
     import marimo as mo
     import pandas as pd 
     import folium
-    import leafmap.maplibregl as leafmap
+    from folium.plugins import Draw
     import geopandas as gpd
-    from maplibre.plugins import MapboxDrawControls, MapboxDrawOptions
+    from shapely.geometry import box
+    from IPython.display import display
+
     from langchain_community.vectorstores import Chroma
     from langchain.prompts import ChatPromptTemplate
     from langchain.chains import ConversationalRetrievalChain
     from langchain.schema import Document
     from langchain_openai import ChatOpenAI
     from langchain_core.output_parsers import StrOutputParser
-    return (
-        ChatOpenAI,
-        ChatPromptTemplate,
-        MapboxDrawControls,
-        MapboxDrawOptions,
-        StrOutputParser,
-        leafmap,
-        mo,
-    )
+    return ChatOpenAI, ChatPromptTemplate, Draw, StrOutputParser, folium, mo
 
 
 @app.cell
@@ -42,37 +36,35 @@ def _(mo):
 
 
 @app.cell
-def _(leafmap):
-    m = leafmap.Map(center=[37.77, -122.42], zoom=12, style="positron")
-    draw_opts = MapboxDrawOptions(display_controls_default=True)
-    draw_ctrl = MapboxDrawControls(draw_opts)
-    m.add_control(draw_ctrl)
+def _(Draw, folium):
+    m = folium.Map(location=[0, 0], zoom_start=2)
+    draw1 = Draw(export= True,  filename='map_selection.geojson',
+        draw_options={
+            'polyline': False,
+            'polygon': False,
+            'circle': False,
+            'circlemarker': False,
+            'marker': False,
+            'rectangle': True
+        },
+        edit_options={'edit': False}
+    )
+    draw1.add_to(m)
     m
-    return m, draw_ctrl
-
-
-@app.cell(hide_code=True)
-def _(test):
-
-    #tools for chatbot 
-    map_data = test.draw_features_selected
-
-    coordinates_list = 0
-
-    if len(map_data) > 0:
-        coordinates_list = map_data[0]['geometry']['coordinates']
-        #coordinates = [coord for sublist in coordinates_list for coord in sublist]
-        #coordinates_list = pd.DataFrame(coordinates, columns=['longitude', 'latitude'])
-    else: 
-        print("No Selected Region")
-    coordinates_list
     return
-"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"
+
 
 @app.cell
 def _(ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo):
     def my_model(messages, config):
         HF_TOKEN = "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"
+
+        import pandas as pd
+        rectangles_df = pd.DataFrame(columns=['southwest', 'northeast'])
+
+    # Example function to update rectangles (hooked to ipyleaflet DrawControl)
+    def add_rectangle(sw, ne):
+        rectangles_df.loc[len(rectangles_df)] = [sw, ne]
 
         llm = ChatOpenAI(
             base_url="https://router.huggingface.co/v1",
@@ -89,24 +81,14 @@ def _(ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo):
 
         chain = prompt | llm | StrOutputParser()
 
-        # Example: inject polygon info into context
-        q = messages[-1]["content"]
-        if polygon is not None:
-            q += f"\nThe user has drawn a polygon with {len(polygon.exterior.coords)} points."
-        return chain.invoke({"question": q})
-
-    return mo.ui.chat(my_model)
+        response = chain.invoke({"question": "{question}"})
 
 
-@app.cell
-def _(MapboxDrawControls, MapboxDrawOptions, leafmap):
-    test = leafmap.Map(center=[0, 0], zoom=1, style="positron")
-    draw_options = MapboxDrawOptions(
-    display_controls_default=False,
-    controls=MapboxDrawControls(polygon=True, line_string=False, point=True, trash=True),)
-    test.add_draw_control(draw_options)
-    test
-    return (test,)
+
+        return response
+
+    mo.ui.chat(my_model)
+    return
 
 
 if __name__ == "__main__":
