@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Union, Tuple, Dict, Any
+from typing import Optional, Union, Tuple, Dict, Any, Literal
 import xarray as xr
 import s3fs
 import fsspec
@@ -10,10 +10,8 @@ from datetime import datetime
 import shutil
 import os
 import pandas as pd
-from typing import Optional, Tuple, Union, Dict, Any
 from pydantic import BaseModel, Field, confloat
-
-
+from langchain.tools import Tool, StructuredTool
 
 ### helper functions to normalize coords
 
@@ -34,12 +32,12 @@ def _select_variable(ds: xr.Dataset, var: Union[str, Dict[str, str]]) -> str:
                 return k
         raise KeyError(f"Variable '{var}' not found. Available: {list(ds.data_vars)}")
 
-    if _HAS_CF:
-        for key in ["standard_name", "long_name", "units"]:
-            if key in var:
-                matches = ds.cf.select_variables(**{key: var[key]})
-                if matches:
-                    return list(matches)[0]
+    #if _HAS_CF:
+    #    for key in ["standard_name", "long_name", "units"]:
+    #        if key in var:
+    #            matches = ds.cf.select_variables(**{key: var[key]})
+    #            if matches:
+    #                return list(matches)[0]
 
     key_order = ["standard_name", "long_name", "units"]
     for candidate in ds.data_vars:
@@ -114,7 +112,7 @@ def download_to_temp(
     ds: Union[xr.Dataset, xr.DataArray],
     *,
     max_size_gb: float = 1.0,
-    temp_dir: Optional[str] = None,
+    temp_dir: Optional[str] = "temp",
     filename: Optional[str] = None,
 ) -> str:
     """
@@ -192,20 +190,22 @@ def download_to_temp(
     
     # Save the data
     print(f"Saving to {save_path} (estimated size: {estimated_gb:.2f} GB)")
+
+    #size_bytes = ds.to_array().nbytes
+    #size_gb = size_bytes / (1024**3)
+    #print(f"Size in memory: {size_gb}")
+    
+    #if actual_gb > max_size_gb:
+        # Clean up and raise error if actual size exceeds limit
+    #    save_path.unlink()
+    #    raise ValueError(
+    #        f"Actual file size ({actual_gb:.2f} GB) exceeded maximum "
+    #        f"allowed size ({max_size_gb:.2f} GB). File was deleted."
+    #    )
+    
     ds_to_save["time"] = pd.to_datetime(ds_to_save["time"].values).tz_localize("UTC").tz_convert(None)
     ds_to_save.to_netcdf(save_path, encoding=encoding)
     
-    # Verify actual file size
-    actual_gb = os.path.getsize(save_path) / (1024**3)
-    print(f"Actual file size: {actual_gb:.2f} GB")
-    
-    if actual_gb > max_size_gb:
-        # Clean up and raise error if actual size exceeds limit
-        save_path.unlink()
-        raise ValueError(
-            f"Actual file size ({actual_gb:.2f} GB) exceeded maximum "
-            f"allowed size ({max_size_gb:.2f} GB). File was deleted."
-        )
     
     return save_path
 
@@ -318,13 +318,13 @@ def load_climate_data(
 
 
 class ClimateDataParams(BaseModel):
-    store: Union[str, dict] = Field(
+    store: Literal[
+        "gs://weatherbench2/datasets/era5/1959-2023_01_10-6h-240x121_equiangular_with_poles_conservative.zarr",
+        "gcs://nmfs_odp_nwfsc/CB/mind_the_chl_gap/IO.zarr"
+    ] = Field(
         ...,
-        description=(
-            "Cloud storage location or mapping object. "
-            "Can be a URL string (e.g., 's3://...' or 'gs://...') or an existing store object."
-        )
-    )
+        description="Available stores to read from."
+    ),
     variable: Optional[Union[str, Dict[str, str]]] = Field(
         None,
         description="Variable name or CF-style selector, e.g., {'standard_name': 'air_temperature'}"
@@ -346,4 +346,13 @@ class ClimateDataParams(BaseModel):
     )
     storage_options: Optional[Dict[str, Any]] = Field(
         None, description="Extra options for cloud storage access if 'store' is a URL string"
+    )
+
+
+def create_loader_tool():
+    return StructuredTool.from_function(
+        func=load_climate_data,
+        name="load_climate_data",
+        description="A general use function for downloading datasets from various sources on the internet.",
+        args_schema=ClimateDataParams
     )
