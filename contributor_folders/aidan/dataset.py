@@ -14,13 +14,19 @@ class SpatialBounds(BaseModel):
 class Access(BaseModel):
     platform: str
     path: str
+<<<<<<< HEAD
+=======
     access_function: Optional[str] = ""
     other_args: Optional[dict] = {}
+>>>>>>> aa213b2d152fb29a697d7271cdf076f9f2c1a546
 
 class Variable(BaseModel):
     standard_name: str
     description: str
+<<<<<<< HEAD
+=======
     units: str
+>>>>>>> aa213b2d152fb29a697d7271cdf076f9f2c1a546
 
 class Variables(BaseModel):
     variables: List[Variable]
