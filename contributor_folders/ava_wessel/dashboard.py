@@ -27,15 +27,21 @@ def _():
 
 @app.cell
 def _(mo):
-    mo.callout(mo.md("""
-    <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+    mo.md(
+        """
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; background: #f0f9ff; padding: 5px; border-radius: 10px;">
         <img src="https://oceanhackweek.org/_static/logo.png" 
-             alt="Logo" width="50" height="50" style="border-radius: 0%;">
-        <h1 style="font-family: Arial, subpixel-antialiased; font-size: 50px; color: black; margin: 0; font-weight: bold">
+             alt="Logo" width="60" height="60">
+        <span style="font-family: Arial, Helvetica, sans-serif; 
+                     font-size: 48px; 
+                     font-weight: 700; 
+                     color: #002147; 
+                     line-height: 1;">
             Data Dashboard with Chatbot
-        </h1>
+        </span>
     </div>
-    """), kind = 'info')
+    """
+    )
     return
 
 
@@ -57,8 +63,8 @@ def _(m, mo):
 def _(mo):
     mo.md(
         """
-    <div style="gap: 12px;">
-        <h1 style="font-family: Arial, sans-serif; font-size: 17px; color: '#2791F5'; margin: 0; font-weight: bolder">
+    <div style="gap: 12px; background: #f0f9ff; padding: 8px; border-radius: 10px;">
+        <h1 style="font-family: Arial, sans-serif; font-size: 17px; color: black; margin: 0; font-weight: bolder">
             Your Selected Data Boundaries:
         </h1>
     </div>
@@ -86,7 +92,7 @@ def _(mo, widget, x, y):
         f"<b>Longitude max:</b> {round(map_frame[2], 2)}</span><br>"
         f"<span style='font-size:16px'><b>Latitude min:</b> {round(map_frame[1], 2)}, "
         f"<b>Latitude max:</b> {round(map_frame[3], 2)}</span><br>"
-        f"<span style='font-size:18px; color:darkblue'><b>Point Selected:</b> {round(x, 2)}, {round(y, 2)}</span>"
+        f"<span style='font-size:18px ; color:darkblue'><b>Point Selected:</b> {round(x, 2)}, {round(y, 2)}</span>"
     )
     return
 
@@ -95,9 +101,9 @@ def _(mo, widget, x, y):
 def _(mo):
     mo.md(
         r"""
-    <div style="gap: 12px;">
-        <h1 style="font-family: Arial, sans-serif; font-size: 15px; color: '#2791F5'; margin: 0; font-weight: bolder">
-            Please provide HF Token to run the Chatbot:
+    <div style="gap: 12px; ">
+        <h1 style="font-family: Arial, sans-serif; font-size: 11px; color: '#2791F5'; margin: 0; background:#f0f9ff; padding: 8px;font-weight: bold; border-radius: 10px; ">
+            Please provide HF token to run the Chatbot
         </h1>
     </div>
     """
@@ -107,7 +113,7 @@ def _(mo):
 
 @app.cell
 def _(mo):
-    text_area = mo.ui.text_area(placeholder="Enter HF Token ...")
+    text_area = mo.ui.text_area(placeholder="Enter HF Token ...", )
     text_area
     return (text_area,)
 
@@ -116,6 +122,11 @@ def _(mo):
 def _(text_area):
     user_key = text_area.value.strip()
     return (user_key,)
+
+
+@app.cell
+def _():
+    return
 
 
 @app.cell
