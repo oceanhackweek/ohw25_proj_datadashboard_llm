@@ -14,7 +14,7 @@ This reppository hold all code needed to run our LLM-powered climate data analys
 
 * Check out the preliminary code structure here: https://www.figma.com/community/file/1539761856510676831
 * Ideation Presentation: Not yet available
-* Slack channel: ohw25_proj_name
+* Slack channel: ohw25_proj_llm
 * Project google drive: Not yet available
 * Final presentation: Not yet available
 
@@ -38,8 +38,7 @@ Boris has some chatbot experience... the rest of us are comfortable with python 
 Have a functioning interactive dashbord
 
 ## Datasets
-- placeholder 1
-- placeholder 2
+can be found here:  [datasets](https://github.com/oceanhackweek/ohw25_proj_datadashboard_llm/blob/main/data/dataset_track.ipynb)
 
 ## Workflow/Roadmap
 Build UI, connect llm to one data set for initial testing, extend as far as we can 
