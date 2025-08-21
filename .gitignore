@@ -1,2 +1,7 @@
 *.env
 **/.ipynb_checkpoints/*
+__pycache__/
+*.pyc
+*.ipynb_checkpoints/
+*.nc
+contributor_folders/*/llm_downloads/
