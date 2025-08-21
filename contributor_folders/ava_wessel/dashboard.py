@@ -10,6 +10,8 @@ def _():
     import pandas as pd 
     import geopandas as gpd
     import openlayers as ol
+    from dotenv import load_dotenv
+    load_dotenv()
 
     from langchain_community.vectorstores import Chroma
     from langchain.prompts import ChatPromptTemplate
@@ -89,9 +91,10 @@ def _(
     map_boundaries,
     map_frame,
     mo,
+    os,
 ):
     def my_model(messages, config):
-        HF_TOKEN = "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"
+        HF_TOKEN = os.environ['HF_TOKEN']
 
         def map_boundaries(area):
             if len(map_frame) > 0:
