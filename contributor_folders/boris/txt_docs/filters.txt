@@ -1,0 +1,50 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import xarray as xr
+import scipy.signal as signal
+FILE_IN = "text.nc"
+
+ds = xr.open_dataset(FILE_IN)
+time = pd.to_datetime(ds["time"].values)
+y = pd.Series(ds["analysed_sst"].values, index=time).astype(float)
+y = y.interpolate(limit_direction="both")
+fs = 1.0  # samples/day
+nyq = fs/2.0
+
+def butter_filter(series: pd.Series, kind: str, cutoff, order: int = 4) -> pd.Series:
+    """Zero-phase Butterworth filter. kind in {'low','high','band'}.
+    cutoff: scalar (low/high) or tuple (low, high) in cycles/day.
+    """
+    if kind in ("low", "high"):
+        wn = cutoff / nyq
+    elif kind == "band":
+        wn = [c / nyq for c in cutoff]
+    else:
+        raise ValueError("kind must be 'low', 'high', or 'band'")
+    btype = {"low": "lowpass", "high": "highpass", "band": "bandpass"}[kind]
+    b, a = signal.butter(order, wn, btype=btype)
+    return pd.Series(signal.filtfilt(b, a, series.values), index=series.index)
+# -------------------- Harmonic regression anomalies --------------------
+
+lp_30     = butter_filter(y, "low",  1/30)              # low-pass ~30d
+hp_7      = butter_filter(y, "high", 1/7)               # high-pass ~7d
+bp_10_90  = butter_filter(y, "band", (1/90, 1/10))      # 10–90d band
+# 2) Filters (dual axes). Use FOUR distinct colors per user request.
+plt.figure(figsize=(12,4.8))
+ax1 = plt.gca()
+line_orig, = ax1.plot(y.index, y.values, label="Original", alpha=0.6, color="C0")
+line_lp,   = ax1.plot(lp_30.index, lp_30.values, label="Low-pass (~30d)", color="C1")
+ax1.set_xlabel("Date")
+ax1.set_ylabel("Temperature")
+ax1.set_title("SST Filters with Dual Axes (Distinct Colors)")
+ax2 = ax1.twinx()
+line_hp, = ax2.plot(hp_7.index, hp_7.values, label="High-pass (~7d)", color="C2")
+line_bp, = ax2.plot(bp_10_90.index, bp_10_90.values, label="Band-pass (10–90d)", color="C3")
+ax2.axhline(0, linestyle="--", linewidth=1)
+ax2.set_ylabel("Anomaly")
+lines = [line_orig, line_lp, line_hp, line_bp]
+labels = [l.get_label() for l in lines]
+ax1.legend(lines, labels, loc="upper left")
+plt.tight_layout()
+plt.show()
