@@ -8,10 +8,10 @@
         "end_time": "2022-12-31"
       },
       "spatial_bounds": {
-        "min_lat": -90.0,
-        "min_lon": -180.0,
-        "max_lat": 90.0,
-        "max_lon": 180.0
+        "min_lat": -12.0,
+        "min_lon": 42.0,
+        "max_lat": 32.0,
+        "max_lon": 102.0
       },
       "variables": {
         "variables": [
