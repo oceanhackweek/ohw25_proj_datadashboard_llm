@@ -14,7 +14,7 @@ This reppository hold all code needed to run our LLM-powered climate data analys
 
 * Check out the preliminary code structure here: https://www.figma.com/community/file/1539761856510676831
 * Ideation Presentation: Not yet available
-* Slack channel: ohw25_proj_name
+* Slack channel: ohw25_proj_llm
 * Project google drive: Not yet available
 * Final presentation: Not yet available
 
