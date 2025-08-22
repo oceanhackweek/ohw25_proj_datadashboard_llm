@@ -11,6 +11,8 @@
 
 * `scripts` backend python scripts to control data access, tools available to the model, etc
 * `data` data will all be cloud accessed. Will add links to cloud buckets once we have decided on which dataset we want to incorporate
+  
+* `photo` store figures and photo
 
 ## Data Dashboard powered by LLM:
 
