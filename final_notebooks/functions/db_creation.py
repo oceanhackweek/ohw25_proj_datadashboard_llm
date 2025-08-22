@@ -6,7 +6,7 @@ from langchain.schema import Document
 
 import json
 
-def read_examples(filename: str):
+def read_examples(filename: str, token: str = None):
     """
     Reads a JSON file containing code description examples
     and returns them as a list of dictionaries.
@@ -16,14 +16,18 @@ def read_examples(filename: str):
     return data
 
 examples = read_examples("functions/code_descriptions.json")
-doc_embedder = HuggingFaceEndpointEmbeddings(
+
+def create_db_examples(token: str = None):
+
+    if not token:
+        token = hf_config.get_hf_token()
+
+    doc_embedder = HuggingFaceEndpointEmbeddings(
                                         model="Qwen/Qwen3-Embedding-8B",
                                         task="feature-extraction",
                                         model_kwargs={"normalize": True},
-                                        huggingfacehub_api_token=hf_config.get_hf_token()
-                                    )
-def create_db_examples():
-
+                                        huggingfacehub_api_token=token)
+    
     docs = []
     for doc in examples:
         # use the definition as the content, and keep the term (and letter) as metadata
