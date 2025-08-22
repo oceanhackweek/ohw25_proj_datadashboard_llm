@@ -18,7 +18,7 @@ def load_agent_executor(token: str):
         repl_tool
     ]
 
-    llm = get_llm()
+    llm = get_llm(token)
 
     agent = create_tool_calling_agent(
         llm=llm,
