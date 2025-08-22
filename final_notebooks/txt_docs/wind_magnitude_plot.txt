@@ -1,0 +1,38 @@
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import cmocean
+import numpy as np
+
+# Compute wind magnitude
+uwind = dataset['u_wind'].sel(time='2020-01-01')
+vwind = dataset['v_wind'].sel(time='2020-01-01')
+wind_mag = np.sqrt(uwind**2 + vwind**2)
+
+# Define vmin/vmax (adjust vmax depending on your dataset)
+vmin, vmax = 0, 10 
+
+fig, ax = plt.subplots(figsize=(10, 6),
+                       subplot_kw={'projection': ccrs.PlateCarree()})
+
+# Plot wind magnitude
+im = wind_mag.plot(
+    ax=ax,
+    transform=ccrs.PlateCarree(),
+    cmap=cmocean.cm.speed,
+    vmin=vmin, vmax=vmax,
+    add_colorbar=False
+)
+
+# Coastlines and features
+ax.coastlines()
+ax.add_feature(cfeature.BORDERS, linewidth=0.5)
+ax.add_feature(cfeature.LAND, facecolor='lightgray')
+
+# Colorbar
+cbar = plt.colorbar(im, ax=ax, orientation='vertical', shrink=0.7, pad=0.05)
+cbar.set_label('Wind speed (m/s)')
+
+ax.set_title('Wind Speed Magnitude on 2020-01-01')
+
+plt.show()
