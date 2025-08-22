@@ -14,6 +14,8 @@
   
 * `photo` store figures and photo
 
+* `pixi.toml` working environment setup
+
 ## Data Dashboard powered by LLM:
 
 ### Planning
