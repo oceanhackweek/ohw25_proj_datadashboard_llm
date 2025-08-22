@@ -45,38 +45,6 @@ cd final_notebooks/llm_working_tutorial
 python -m venv env
 source env/bin/activate           # macOS/Linux
 # .\env\Scripts\activate          # Windows PowerShell
-
-# (option B) conda
-# conda create -n ohw-llm python=3.11 -y
-# conda activate ohw-llm
-```
-
----
-
-## ⚙️ Requirements
-
-- Python **3.10+** (3.11 recommended)
-- JupyterLab or Jupyter Notebook
-- Packages:
-  - `xarray`, `fsspec`, `s3fs`, `gcsfs`, `zarr`
-  - `pandas`, `numpy`
-  - `python-dotenv`
-- (Optional for LLM features):  
-  - `openai`, `huggingface_hub`, `requests`
-
----
-
-## 🚀 Quickstart
-
-### 1️⃣ Create and activate a virtual environment
-```bash
-# from repo root
-cd final_notebooks/llm_working_tutorial
-
-# (option A) venv
-python -m venv env
-source env/bin/activate           # macOS/Linux
-# .\env\Scripts\activate          # Windows PowerShell
 ```
 ```bash
 # (option B) conda
