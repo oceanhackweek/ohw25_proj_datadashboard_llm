@@ -47,7 +47,7 @@ def load_safe_desc(path: str) -> str:
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
     text = json.dumps(data, ensure_ascii=False, indent=2)
-    return text.replace("{", "{{").replace("}", "}}")
+    return text
 
 def get_example_of_visualizations(query: str, k: int = 3) -> list[str]:
     doc_embedder = HuggingFaceEndpointEmbeddings(
@@ -77,8 +77,9 @@ def description_reader(query: str):
         model="openai/gpt-oss-20b:fireworks-ai"
     )
 
+    system_message = SYSTEM_PROMPT.replace("{safe_desc}", safe_desc)
     prompt = ChatPromptTemplate.from_messages([
-        ("system", SYSTEM_PROMPT.format(safe_desc=safe_desc)),
+        ("system", system_message),
         ("human", "{question}")
     ])
 
