@@ -53,9 +53,21 @@ UI                     ----->  LLM(Large Language Model)                ----->  
 Use Marimo to build dashboard, connect llm to one data set for initial testing, extend as far as we can to achieve the **Goals**.
 
 ## Results/Findings
+
+<!-- Centered, smaller Marimo plot -->
+<p align="center">
+  <img src="photo/marimo_plot.png" alt="Marimo plot" width="55%">
+</p>
+
 The final marimo dashboard can be found in the `final_notebooks` folder. 
 
 This dashboard comprises of interactive map and a chatbot to select and run analysis on chosen data. All users must have an HF token key from Hugging Face: https://huggingface.co/
+
+<!-- Side-by-side tutorial & LLM plots -->
+<p align="center">
+  <img src="photo/tutorial_plot.png" alt="Tutorial plot" width="46%">
+  <img src="photo/llm_plot.png" alt="LLM plot" width="46%">
+</p>
 
 The demonstration of LLM working flow in our project can be found in `/final_notebooks/llm_working_tutorial` folder.
 
