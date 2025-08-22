@@ -35,6 +35,9 @@ This reppository hold all code needed to run our LLM-powered climate data analys
 | Aidan Lewis         | Participant         |
 | Dinal Meecle        | Participant         |
 
+![Group photo](./photo/whiteboard_group.jpg)
+
+
 
 ## Background
 Boris has some chatbot experience... the rest of us are comfortable with python and excited to learn 
