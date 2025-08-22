@@ -244,22 +244,20 @@ def load_climate_data(
         
     Returns
     -------
-    xr.Dataset
-        Processed dataset with consistent dimensions
+    dict
+        A structured summary including local path and dataset metadata.
     """
     
-    # Open dataset
+    # Open dataset WITHOUT chunks to avoid initial chunk warnings, then rechunk later
     if isinstance(store, str):
-        # If store is a URL string, use storage_options
         ds = xr.open_dataset(
             store,
             engine="zarr",
-            chunks=chunks,
+            chunks=None,
             backend_kwargs={"storage_options": storage_options},
         )
     else:
-        # If store is already an FSMap object, use it directly
-        ds = xr.open_zarr(store, chunks=chunks)
+        ds = xr.open_zarr(store, chunks=None)
     
     # Get coordinate names
     lon_name, lat_name = _get_coord_names(ds)
@@ -293,28 +291,50 @@ def load_climate_data(
         ds = ds.resample(time=resample_to).mean()
     
     # Ensure consistent dimension order
-    # Get available dimensions
     dims = list(ds.dims)
-    # Core dims we want first (if they exist)
     core_dims = ["time", "latitude", "longitude"]
-    # Filter out core dims that actually exist
     core_dims = [d for d in core_dims if d in dims]
-    # Add any remaining dims at the end
     other_dims = [d for d in dims if d not in core_dims]
-    # Combine for final ordering
     final_dims = core_dims + other_dims
-    
     ds = ds.transpose(*final_dims)
 
+    # Variable selection
+    selected_variable: Optional[str] = None
     if variable:
-        var = _select_variable(ds, variable)
-        ds = ds[var]
+        selected_variable = _select_variable(ds, variable)
+        ds = ds[selected_variable]
 
-    path = download_to_temp(
-        ds
-    )
-    
-    return ds, path
+    # Rechunk after loading/subsetting
+    default_chunks = {k: v for k, v in [("time", 24), ("latitude", 256), ("longitude", 256)] if k in ds.dims}
+    ds = ds.chunk(chunks or default_chunks)
+
+    # Save to temp and build metadata
+    path = download_to_temp(ds)
+
+    # Build a small preview safely
+    try:
+        preview_stats = {
+            "min": float(ds.min().compute().item()),
+            "max": float(ds.max().compute().item()),
+            "mean": float(ds.mean().compute().item()),
+        }
+    except Exception:
+        preview_stats = {}
+
+    metadata = {
+        "local_path": path,
+        "variable": selected_variable,
+        "dims": {k: int(v) for k, v in ds.sizes.items()},
+        "coords": {c: (str(ds[c].dtype), ds[c].ndim) for c in ds.coords},
+        "chunks": {k: tuple(map(int, v)) for k, v in ds.chunks.items()} if hasattr(ds, "chunks") and ds.chunks else {},
+        "time_coverage": {
+            "start": str(pd.to_datetime(ds.time.values.min())) if "time" in ds.coords and ds.time.size > 0 else None,
+            "end": str(pd.to_datetime(ds.time.values.max())) if "time" in ds.coords and ds.time.size > 0 else None,
+        },
+        "preview": preview_stats,
+    }
+
+    return metadata
 
 
 class ClimateDataParams(BaseModel):
@@ -353,6 +373,6 @@ def create_loader_tool():
     return StructuredTool.from_function(
         func=load_climate_data,
         name="load_climate_data",
-        description="A general use function for downloading datasets from various sources on the internet. When choosing the variable, only use the variable name and nothing else.",
+        description="A general use function for downloading datasets from various sources on the internet. When choosing the variable, only use the variable name and nothing else. Returns a JSON dict with local_path and metadata.",
         args_schema=ClimateDataParams
     )

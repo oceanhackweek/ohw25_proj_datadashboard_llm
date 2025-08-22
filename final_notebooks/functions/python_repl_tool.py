@@ -27,6 +27,7 @@ def create_python_repl():
         3. Keep your code clean, minimal, and runnable in a single Python cell.
         4. If user’s request cannot be completed, return a helpful error message explaining why.
         5. After you are done showing your result, please give an explanation of what the user is seeing.
+        6. Save any figures to disk under ./outputs and report the saved path in your final message.
         
         Guidelines:
         - Always open the dataset using xarray from the provided file path.
