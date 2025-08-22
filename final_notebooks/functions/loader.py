@@ -286,7 +286,7 @@ def load_climate_data(
     if lon_range is not None:
         target_frame = _infer_target_lon_frame(*lon_range)
         ds = _coerce_longitudes(ds, target_frame)
-    ds = _ensure_lat_monotonic(ds)
+    #ds = _ensure_lat_monotonic(ds)
     
     # Optional time resampling
     if resample_to:
@@ -327,7 +327,7 @@ class ClimateDataParams(BaseModel):
     ),
     variable: Optional[Union[str, Dict[str, str]]] = Field(
         None,
-        description="Variable name or CF-style selector, e.g., {'standard_name': 'air_temperature'}"
+        description="Variable name or CF-style selector, e.g., air_temperature"
     )
     lon_range: Optional[Tuple[confloat(ge=-180, le=180), confloat(ge=-180, le=180)]] = Field(
         None, description="Longitude range (min_lon, max_lon) in degrees"
