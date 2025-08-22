@@ -7,6 +7,8 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent
 from functions.db_creation import create_db_examples
 
 def load_agent_executor(token: str):
+
+    hf_config.set_hf_token(token)
     chroma = create_db_examples(token)
     advisor_tool = create_adviser_tool()
     loader_tool = create_loader_tool()
