@@ -13,7 +13,7 @@ def get_llm():
     llm = ChatOpenAI(
         base_url="https://router.huggingface.co/v1",
         api_key=HF_TOKEN,
-        model="openai/gpt-oss-20b:fireworks-ai" 
+        model="openai/gpt-oss-120b:fireworks-ai" 
     )
     return llm
 

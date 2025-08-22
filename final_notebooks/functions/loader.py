@@ -112,7 +112,7 @@ def download_to_temp(
     ds: Union[xr.Dataset, xr.DataArray],
     *,
     max_size_gb: float = 1.0,
-    temp_dir: Optional[str] = "temp",
+    temp_dir: Optional[str] = "./temp",
     filename: Optional[str] = None,
 ) -> str:
     """
@@ -327,7 +327,7 @@ class ClimateDataParams(BaseModel):
     ),
     variable: Optional[Union[str, Dict[str, str]]] = Field(
         None,
-        description="Variable name or CF-style selector, e.g., {'standard_name': 'air_temperature'}"
+        description="Variable name or CF-style selector, e.g.'air_temperature'"
     )
     lon_range: Optional[Tuple[confloat(ge=-180, le=180), confloat(ge=-180, le=180)]] = Field(
         None, description="Longitude range (min_lon, max_lon) in degrees"
@@ -353,6 +353,6 @@ def create_loader_tool():
     return StructuredTool.from_function(
         func=load_climate_data,
         name="load_climate_data",
-        description="A general use function for downloading datasets from various sources on the internet.",
+        description="A general use function for downloading datasets from various sources on the internet. When choosing the variable, only use the variable name and nothing else.",
         args_schema=ClimateDataParams
     )
