@@ -1,0 +1,34 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import xarray as xr
+import scipy.signal as signal
+FILE_IN = "text.nc"
+
+ds = xr.open_dataset(FILE_IN)
+time = pd.to_datetime(ds["time"].values)
+y = pd.Series(ds["analysed_sst"].values, index=time).astype(float)
+y = y.interpolate(limit_direction="both")
+t = np.arange(len(y))  # days from start
+period = 365.25
+omega1 = 2*np.pi/period
+omega2 = 2*omega1
+X = np.column_stack([
+    np.ones_like(t),
+    t,
+    np.sin(omega1*t), np.cos(omega1*t),
+    np.sin(omega2*t), np.cos(omega2*t),
+])
+beta, *_ = np.linalg.lstsq(X, y.values, rcond=None)
+y_fit = X @ beta
+anom = pd.Series(y.values - y_fit, index=y.index)
+# 3) Harmonic-detrended anomalies
+plt.figure(figsize=(12,4.5))
+plt.plot(anom.index, anom.values, label="Anomaly (trend + annual,semiannual removed)")
+plt.axhline(0, linestyle="--")
+plt.title("SST Anomalies")
+plt.xlabel("Date")
+plt.ylabel("Temperature anomaly")
+plt.legend()
+plt.tight_layout()
+plt.show()

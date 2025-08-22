@@ -1,0 +1,50 @@
+[
+  {
+    "id": null,
+    "metadata": {
+      "source": "./txt_docs/anomaly_calculation.txt"
+    },
+    "page_content": "This code computes sea surface temperature anomalies by removing long-term trends and seasonal cycles through harmonic regression. It is useful for climate and oceanography tasks where highlighting interannual or short-term variability is needed after filtering out predictable signals. Packages used: numpy, pandas, matplotlib, xarray, scipy.signal",
+    "type": "Document"
+  },
+  {
+    "id": null,
+    "metadata": {
+      "source": "./txt_docs/arctic_ocean_plot.txt"
+    },
+    "page_content": "This code generates a polar stereographic map of the Arctic, displaying sea surface temperature data with coastlines, land shading, and gridlines for geographic context. It is useful for climate and oceanography tasks focused on visualizing spatial variability in polar regions with accurate projections. Packages used: cartopy, matplotlib, xarray, numpy",
+    "type": "Document"
+  },
+  {
+    "id": null,
+    "metadata": {
+      "source": "./txt_docs/atlantic_plot.txt"
+    },
+    "page_content": "This code creates a Plate Carrée projection map of the Atlantic Ocean and visualizes sea surface temperature data with geographic context. It is useful for climate and oceanography tasks that require mapping large ocean basins, enabling clear interpretation of spatial variability across latitudes and longitudes. Packages used: cartopy, matplotlib, xarray, numpy",
+    "type": "Document"
+  },
+  {
+    "id": null,
+    "metadata": {
+      "source": "./txt_docs/filters.txt"
+    },
+    "page_content": "This code applies Butterworth filters to a sea surface temperature time series to isolate variability on different timescales. It computes low-pass (~30 d), high-pass (~7 d), and band-pass (10–90 d) signals and visualizes them alongside the original data using dual axes. It is useful for climate and oceanography tasks that require separating short-term, intraseasonal, and longer-term variability, supporting analyses of anomalies, oscillations, and filtering prior to further statistical methods. Packages used: numpy, pandas, matplotlib, xarray, scipy.signal",
+    "type": "Document"
+  },
+  {
+    "id": null,
+    "metadata": {
+      "source": "./txt_docs/rolling_mean.txt"
+    },
+    "page_content": "This code smooths a sea surface temperature time series using rolling means over 7-day and 30-day windows and compares them to the original data. It is useful for climate and oceanography tasks where short-term fluctuations need to be filtered out to highlight weekly or monthly variability and trends. Packages used: numpy, pandas, matplotlib, xarray",
+    "type": "Document"
+  },
+  {
+    "id": null,
+    "metadata": {
+      "source": "./txt_docs/southern_ocean_plot.txt"
+    },
+    "page_content": "This code creates a polar stereographic map of the Southern Ocean, plotting sea surface temperature data with coastlines, land shading, and gridlines for geographic reference. It is useful for climate and oceanography tasks focused on visualizing spatial variability around Antarctica with an appropriate polar projection. Packages used: cartopy, matplotlib, xarray, numpy",
+    "type": "Document"
+  }
+]
