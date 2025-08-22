@@ -7,7 +7,8 @@
 * `final_notebooks`:  
   - `final_dashboard.py` Marimo dashboard  
   - `llm_working_tutorial` demonstration of the working flow of LLM --> plotting  
-  - `demo` example/demo notebooks 
+  - `functions`
+  - `txt_docs` 
 
 * `scripts` backend python scripts to control data access, tools available to the model, etc
 * `data` data will all be cloud accessed. Will add links to cloud buckets once we have decided on which dataset we want to incorporate
