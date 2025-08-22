@@ -3,7 +3,9 @@
 **Repo Structure**
 
 * `contributor_folders` temp folder fors individual work
-* `final_notebooks` marimo notebook to access dashboard
+* `final_notebooks`: `marimo notebook` to access dashboard
+                     `llm_working_tutorial` to show the working flow of LLM
+
 * `scripts` backend python scripts to control data access, tools available to the model, etc
 * `data` data will all be cloud accessed. Will add links to cloud buckets once we have decided on which dataset we want to incorporate
 
@@ -47,7 +49,7 @@ Build UI, connect llm to one data set for initial testing, extend as far as we c
 In the works...
 
 ## Lessons Learned
-In the works...
+Lots of moving parts in this project! Difficult to track keep track of/connect components. Marimo was hyped... but proved difficult. We are not about it. Keep your API keys hidden and protect your pennies.
 
 ## References
 In the works...
