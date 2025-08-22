@@ -1,0 +1,28 @@
+#dataset example
+chl = dataset['CHL_cmes-gapfree'].sel(time='2020-01-01')
+# Create figure and axis with a PlateCarree projection
+fig, ax = plt.subplots(figsize=(10, 6),
+                       subplot_kw={'projection': ccrs.PlateCarree()})
+
+# Plot with log scale normalization
+im = chl.plot(
+    ax=ax,
+    transform=ccrs.PlateCarree(),
+    cmap=cmocean.cm.algae,        # cmocean colormap
+    norm=LogNorm(vmin=chl.min().values, vmax=chl.max().values),
+    add_colorbar=False
+)
+
+# Add coastlines and features
+ax.coastlines()
+ax.add_feature(cfeature.BORDERS, linewidth=0.5)
+ax.add_feature(cfeature.LAND, facecolor='lightgray')
+
+# Add colorbar with log ticks
+cbar = plt.colorbar(im, ax=ax, orientation='vertical', shrink=0.7, pad=0.05)
+cbar.set_label('Chlorophyll Concentration (mg/m³)')
+
+# Add title
+ax.set_title('Chlorophyll Concentration (log scale)')
+
+plt.show()
