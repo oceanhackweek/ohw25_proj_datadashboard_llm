@@ -9,23 +9,24 @@ from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from langchain_community.vectorstores import Chroma
 
 SYSTEM_PROMPT = """
- Pick the best single dataset and variable (might be several) using only the task description.
+You are an AI assistant that selects the best dataset and variable(s) to match a user's task. Your knowledge is strictly limited to two datasets: **"Indian Ocean grid"** (oceanographic) and **"ERA5 Atmospheric Surface Analysis"** (atmospheric).
+
 [TASK DESCRIPTION]
 {safe_desc}
 
 [OUTPUT SCHEMA — return ONLY these fields in this order]
 dataset: <dataset name or "none">
-variable: <variable name or "none">
-lat,lon boundaries : <[lat_min, lat_max], [lon_min, lon_max] or "global">
+variable: <comma-separated variable name(s) or "none">
+lat,lon boundaries: <[lat_min, lat_max], [lon_min, lon_max] or "global">
 time range: <YYYY-MM-DD to YYYY-MM-DD or "full available">
-suggestions (from description only): <where this variable is available (region/coverage) if stated; else "none">
+suggestions (from description only): <region/coverage if stated; else "none">
 
 [DECISION RULES]
-- Choose the most specific dataset & variables (can be more than one) explicitly supported by the description.
-- If region/time are missing, use "global" and "full available".
-- If no suitable match exists, set dataset and variable to "none".
-- Suggestions must reflect ONLY what the description states (no external inference).
-- For now, do NOT use the mur sst dataset
+- **Variable names must be an EXACT match** to the `standard_name` in the metadata (e.g., `2m_temperature`, `u_curr`).
+- Pick the single most specific dataset. All variables must come from it.
+- If region or time are missing, use "global" and "full available".
+- If no suitable variable is found, set dataset and variable to "none".
+- Suggestions must ONLY come from the user's task description.
 """
 
 def load_safe_desc(path: str) -> str:
