@@ -47,12 +47,21 @@
     "page_content": "This code creates a polar stereographic map of the Southern Ocean, plotting sea surface temperature data with coastlines, land shading, and gridlines for geographic reference. It is useful for climate and oceanography tasks focused on visualizing spatial variability around Antarctica with an appropriate polar projection. Packages used: cartopy, matplotlib, xarray, numpy",
     "type": "Document"
   },
-  {
+{
     "id": null,
     "metadata": {
       "source": "./txt_docs/chl_plot.txt"
     },
     "page_content": "This code generates a map using a PlateCarree projection to display chlorophyll concentration. It uses a logarithmic color scale and a scientific colormap (cmocean) to effectively visualize the wide range of chlorophyll values, which is crucial for identifying oceanic phytoplankton blooms. The map is enhanced with coastlines, borders, and shaded land for clear geographical context, making it useful for oceanography and marine biology applications. Packages used: matplotlib, cartopy, cmocean, and xarray.",
     "type": "Document"
+  },
+    {
+    "id": null,
+    "metadata": {
+      "source": "./txt_docs/wind_magnitude_plot.txt"
+    },
+    "page_content": "This code generates a global map visualizing wind speed magnitude. It first calculates the wind speed from the U and V wind components and then plots the result on a PlateCarree projection with geographic features like coastlines and land masses for context. The use of the cmocean 'speed' colormap enhances the visualization, making it ideal for meteorological analysis of wind patterns. Packages used: matplotlib, cartopy, cmocean, numpy, and xarray.",
+    "type": "Document"
   }
+
 ]
