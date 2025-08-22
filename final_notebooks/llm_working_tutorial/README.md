@@ -11,13 +11,13 @@ If you want to reproduce the workflow locally, follow the steps below.
 ---
 
 ## 📂 Folder Contents
-
+```text
 llm_working_tutorial/
 ├─ project_result_1.ipynb # Main notebook to run
 ├─ dataset.py # Loader functions used by the catalog
 ├─ datasets.json # Dataset catalog (paths + access functions)
 └─ env/ # Local venv or secrets folder (ignored)
-
+```
 
 ---
 
