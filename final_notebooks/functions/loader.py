@@ -286,7 +286,7 @@ def load_climate_data(
     if lon_range is not None:
         target_frame = _infer_target_lon_frame(*lon_range)
         ds = _coerce_longitudes(ds, target_frame)
-    ds = _ensure_lat_monotonic(ds)
+    #ds = _ensure_lat_monotonic(ds)
     
     # Optional time resampling
     if resample_to:

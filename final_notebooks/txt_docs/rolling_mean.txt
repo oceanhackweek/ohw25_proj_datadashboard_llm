@@ -1,0 +1,27 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import xarray as xr
+
+FILE_IN = "text.nc"
+
+ds = xr.open_dataset(FILE_IN)
+time = pd.to_datetime(ds["time"].values)
+y = pd.Series(ds["analysed_sst"].values, index=time).astype(float)
+y = y.interpolate(limit_direction="both")
+
+run7  = y.rolling(window=7,  center=True, min_periods=1).mean()
+run30 = y.rolling(window=30, center=True, min_periods=1).mean()
+
+
+# 1) Original & running means
+plt.figure(figsize=(12,4.5))
+plt.plot(y.index, y.values, label="Original")
+plt.plot(run7.index, run7.values, label="7-day running mean")
+plt.plot(run30.index, run30.values, label="30-day running mean")
+plt.title("SST: Original & Running Means")
+plt.xlabel("Date")
+plt.ylabel("Temperature")
+plt.legend()
+plt.tight_layout()
+plt.show()
