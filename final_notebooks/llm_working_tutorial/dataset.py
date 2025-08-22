@@ -38,28 +38,41 @@ class DatasetCollection(BaseModel):
     datasets: List[Dataset]
 
 # --- Add these at the bottom of dataset.py ---
+# --- Generic catalog loader used by datasets.json ---
 import xarray as xr
 
-def load_mur(path: str, platform: str | None = None, meta: dict | None = None, **kwargs):
+def load_climate_data(path: str, platform: str | None = None, meta: dict | None = None, **kwargs):
     """
-    Open the public GHRSST MUR L4 SST Zarr on S3.
-    Catalog path (from datasets.json): s3://mur-sst/zarr-v1/
+    Generic loader that opens a Zarr store given a cloud path.
+    - For AWS S3 paths, uses anonymous access.
+    - For GCS paths, tries anonymous token (works only if bucket is public).
+    Any extra **kwargs are passed through to xr.open_zarr.
     """
-    # anon S3 read
-    try:
-        return xr.open_zarr(path, storage_options={"anon": True}, consolidated=True)
-    except Exception:
-        # some mirrors aren’t consolidated; try non-consolidated read
-        return xr.open_zarr(path, storage_options={"anon": True}, consolidated=False)
+    # Allow platform hint or infer from path
+    p = (platform or "").lower()
+    if not p:
+        if path.startswith("s3://"):
+            p = "aws"
+        elif path.startswith(("gs://", "gcs://")):
+            p = "gcs"
 
-def load_indian_ocean(path: str, platform: str | None = None, meta: dict | None = None, **kwargs):
-    """
-    Open your Indian Ocean IO.zarr on GCS.
-    Catalog path (from datasets.json): gcs://nmfs_odp_nwfsc/CB/mind_the_chl_gap/IO.zarr
-    """
-    # anon GCS read (works only if bucket is public)
+    if p == "aws":
+        # Try consolidated first, fall back to non-consolidated
+        try:
+            return xr.open_zarr(path, storage_options={"anon": True}, consolidated=True, **kwargs)
+        except Exception:
+            return xr.open_zarr(path, storage_options={"anon": True}, consolidated=False, **kwargs)
+
+    if p == "gcs":
+        # Many public GCS buckets accept token="anon"
+        # Consolidation varies; try non-consolidated first for safety
+        try:
+            return xr.open_zarr(path, storage_options={"token": "anon"}, consolidated=False, **kwargs)
+        except Exception:
+            return xr.open_zarr(path, storage_options={"token": "anon"}, consolidated=True, **kwargs)
+
+    # Fallback: let xarray decide, try consolidated then not
     try:
-        return xr.open_zarr(path, storage_options={"token": "anon"}, consolidated=False)
+        return xr.open_zarr(path, consolidated=True, **kwargs)
     except Exception:
-        # If anon fails, you’ll need GCP auth or a different store.
-        raise
+        return xr.open_zarr(path, consolidated=False, **kwargs)
