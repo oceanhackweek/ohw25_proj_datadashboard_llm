@@ -50,7 +50,7 @@ can be found here:  [datasets](https://github.com/oceanhackweek/ohw25_proj_datad
 
 ## Workflow/Roadmap
 |UI                     ----->  |LLM(Large Language Model)              ----->    |Create Plot                                      |
-
+|-------------------------------|-------------------------------------------------|-------------------------------------------------|
 |Use Marimo to build dashboard, |connect llm to one data set for initial testing, |extend as far as we can to achieve the **Goals**.|
 
 ## Results/Findings
