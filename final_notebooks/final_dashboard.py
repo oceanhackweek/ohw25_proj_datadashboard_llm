@@ -8,7 +8,6 @@ app = marimo.App(width="medium")
 def _():
     import marimo as mo
     import pandas as pd 
-    import geopandas as gpd
     import openlayers as ol
     from shapely.geometry import box
     import os
@@ -42,7 +41,7 @@ def _():
 @app.cell
 def _(hf_config):
     # Set token once in your notebook
-    my_token = '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'
+    my_token = ''
     hf_config.set_hf_token(my_token)
     LANGSMITH_TRACING="true"
     LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
@@ -197,7 +196,7 @@ def _(
 ):
     def my_model2(messages, widget):
         question = messages[-1].content   
-        my_token = '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'
+        my_token = ''
         hf_config.set_hf_token(my_token)
 
         map_frame = widget.value["view_state"]["extent"]
