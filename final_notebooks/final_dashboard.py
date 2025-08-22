@@ -11,6 +11,7 @@ def _():
     import openlayers as ol
     from shapely.geometry import box
     import os
+    os.chdir(path='ohw25_proj_datadashboard_llm/final_notebooks')
     from langchain_community.vectorstores import Chroma
     from langchain.prompts import ChatPromptTemplate
     from langchain.chains import ConversationalRetrievalChain
@@ -21,40 +22,20 @@ def _():
     from langchain.agents import AgentExecutor, create_tool_calling_agent
     import json
     import hf_config
+    from executor import load_agent_executor
 
 
     current_directory = os.getcwd()
     print(current_directory)
     from dotenv import load_dotenv
-    return (
-        AgentExecutor,
-        ChatOpenAI,
-        ChatPromptTemplate,
-        MessagesPlaceholder,
-        create_tool_calling_agent,
-        hf_config,
-        mo,
-        ol,
-    )
+    return hf_config, load_agent_executor, mo, ol
 
 
 @app.cell
-def _(hf_config):
-    # Set token once in your notebook
-    my_token = ''
-    hf_config.set_hf_token(my_token)
-    LANGSMITH_TRACING="true"
-    LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
-    LANGSMITH_API_KEY=''
-    LANGSMITH_PROJECT="ohw_llm"
-    return
-
-
-@app.cell
-def _():
-    from db_creation import create_db_examples
-    vector_store_hf = create_db_examples()
-    return
+def _(load_agent_executor):
+    token = ''
+    executor = load_agent_executor(token)
+    return (token,)
 
 
 @app.cell
@@ -64,13 +45,17 @@ def _(mo):
     <div style="display: flex; align-items: center; justify-content: center; gap: 12px; background: #f0f9ff; padding: 5px; border-radius: 10px;">
         <img src="https://oceanhackweek.org/_static/logo.png" 
              alt="Logo" width="60" height="60">
-        <span style="font-family: Arial, Helvetica, sans-serif; 
+        <span style="font-family: monospace; 
                      font-size: 48px; 
                      font-weight: 700; 
-                     color: #002147; 
-                     line-height: 1;">
-            Data Dashboard with Chatbot
+                     color: black; 
+                     line-height: 0.5;">
+            SplashBot
         </span>
+        1.0
+        <img src="https://cdn-icons-png.flaticon.com/512/6501/6501379.png" 
+             alt="Logo" width="100" height="90">
+
     </div>
     """
     )
@@ -96,9 +81,9 @@ def _(mo):
     mo.md(
         r"""
     <div style="gap: 30px;">
-      <h1 style="font-family: Arial, sans-serif; font-size: 12px; color: lightseagreen; margin: 0; 
+      <h1 style="font-family: Arial, sans-serif; font-size: 15px; color: lightseagreen; margin: 0; 
                  background: #f0f9ff; padding: 8px; font-weight: bold; border-radius: 10px;
-                 display: flex; align-items: center; gap: 6px;">
+                 display: flex; align-items: center; gap: 10px;">
         <img src="https://cdn-icons-png.flaticon.com/512/2976/2976128.png" 
              alt="Logo" width="25" height="0">
         Explore the map by dragging and zooming, or click any location to analyze its data. Use the chatbot for instant insights and comparisons.
@@ -152,9 +137,9 @@ def _(mo):
     mo.md(
         r"""
     <div style="gap: 12px;">
-      <h1 style="font-family: Arial, sans-serif; font-size: 12px; color: lightseagreen; margin: 0; 
+      <h1 style="font-family: Arial, sans-serif; font-size: 15px; color: lightseagreen; margin: 0; 
                  background: #f0f9ff; padding: 8px; font-weight: bold; border-radius: 10px;
-                 display: flex; align-items: center; gap: 6px;">
+                 display: flex; align-items: center; gap: 10px;">
         <img src="https://cdn-icons-png.flaticon.com/512/2976/2976128.png" 
              alt="Logo" width="25" height="40">
         Please provide HF token to run the Chatbot.
@@ -179,63 +164,24 @@ def _(text_area):
 
 
 @app.cell
-def _():
-    return
-
-
-@app.cell
-def _(
-    AgentExecutor,
-    ChatOpenAI,
-    ChatPromptTemplate,
-    MessagesPlaceholder,
-    create_tool_calling_agent,
-    hf_config,
-    mo,
-    widget,
-):
+def _(hf_config, load_agent_executor, mo, token, widget):
     def my_model2(messages, widget):
         question = messages[-1].content   
-        my_token = ''
+        my_token = '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'
         hf_config.set_hf_token(my_token)
+        executor = load_agent_executor(token)
 
         map_frame = widget.value["view_state"]["extent"]
         point_selected = widget.value.get("clicked", {}).get("coordinate", [0, 0])
-
-        from adviser_tool import create_adviser_tool
-        adviser_tool_llm = create_adviser_tool()
-        tools = [adviser_tool_llm]
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", f"You are an expert in climate data analysis, you have adviser tool, which can help you to asnwer user's questions about variables/datasets. If the question about data, use only information from adviser_tool. If the {map_frame} or {point_selected} is not [0,0], answer questions about the data from this selected area. "),
-                ("user", "{input}"),
-                MessagesPlaceholder(variable_name="agent_scratchpad"),
-            ]
-        )
-        llm = ChatOpenAI(
-            base_url="https://router.huggingface.co/v1",
-            api_key=hf_config.get_hf_token(),
-            model="openai/gpt-oss-120b:fireworks-ai"  
-        )
-
-        # Define the agent
-        agent = create_tool_calling_agent(
-            llm=llm,
-            tools=tools,
-            prompt=prompt,
-        )
+        if point_selected != [0,0]:
+            point_selected = point_selected + [point_selected[0] + 1, point_selected[1] + 1]
 
         # Create the executor
-        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-        result = agent_executor.invoke({"input": question})
+        remark = f'If the {map_frame} or {point_selected} is not [0,0], answer questions about the data from this selected area.'
+        result = executor.invoke({"input": question + remark})
         return result
 
     mo.ui.chat(lambda messages: my_model2(messages, widget))
-    return
-
-
-@app.cell
-def _():
     return
 
 
