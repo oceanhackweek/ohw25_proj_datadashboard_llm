@@ -11,7 +11,7 @@
   - `txt_docs` 
 
 * `scripts` backend python scripts to control data access, tools available to the model, etc
-* `data` data will all be cloud accessed. Will add links to cloud buckets once we have decided on which dataset we want to incorporate
+* `data` data will all be cloud accessed. Access can be found in `dataset_track.ipynb` within this folder.
   
 * `photo` store figures and photo
 
