@@ -7,8 +7,13 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.prompts import MessagesPlaceholder
 
 
-def get_llm():
-    HF_TOKEN = hf_config.get_hf_token()
+def get_llm(token: str):
+
+    if not token:
+        HF_TOKEN = hf_config.get_hf_token()
+    else:
+        HF_TOKEN = token
+        
     
     llm = ChatOpenAI(
         base_url="https://router.huggingface.co/v1",
