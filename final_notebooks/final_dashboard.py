@@ -96,10 +96,15 @@ def _(m, mo):
 def _(mo):
     mo.md(
         r"""
-    <div style="gap: 12px; background: #f0f9ff; padding: 8px; border-radius: 10px;">
-        <h1 style="font-family: Arial, sans-serif; font-size: 12px; color: green; margin: 0; font-weight: bold">
-            Explore the map by dragging and zooming, or click any location to analyze its data. Use the chatbot for instant insights and comparisons.
+    <div style="gap: 30px;">
+      <h1 style="font-family: Arial, sans-serif; font-size: 12px; color: lightseagreen; margin: 0; 
+                 background: #f0f9ff; padding: 8px; font-weight: bold; border-radius: 10px;
+                 display: flex; align-items: center; gap: 6px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/2976/2976128.png" 
+             alt="Logo" width="25" height="0">
+        Explore the map by dragging and zooming, or click any location to analyze its data. Use the chatbot for instant insights and comparisons.
         </h1>
+      </h1>
     </div>
     """
     )
@@ -147,10 +152,14 @@ def _(mo, widget, x, y):
 def _(mo):
     mo.md(
         r"""
-    <div style="gap: 12px; ">
-        <h1 style="font-family: Arial, sans-serif; font-size: 12px; color: green; margin: 0; background:#f0f9ff; padding: 8px;font-weight: bold; border-radius: 10px; ">
-            Please provide HF token to run the Chatbot
-        </h1>
+    <div style="gap: 12px;">
+      <h1 style="font-family: Arial, sans-serif; font-size: 12px; color: lightseagreen; margin: 0; 
+                 background: #f0f9ff; padding: 8px; font-weight: bold; border-radius: 10px;
+                 display: flex; align-items: center; gap: 6px;">
+        <img src="https://cdn-icons-png.flaticon.com/512/2976/2976128.png" 
+             alt="Logo" width="25" height="40">
+        Please provide HF token to run the Chatbot.
+      </h1>
     </div>
     """
     )

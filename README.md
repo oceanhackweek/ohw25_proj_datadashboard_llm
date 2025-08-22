@@ -43,7 +43,7 @@ This reppository hold all code needed to run our LLM-powered climate data analys
 Boris has some chatbot experience... the rest of us are comfortable with python and excited to learn 
 
 ## Goals
-Have a functioning interactive dashbord
+Have a functioning interactive dashboard
 
 ## Datasets
 can be found here:  [datasets](https://github.com/oceanhackweek/ohw25_proj_datadashboard_llm/blob/main/data/dataset_track.ipynb)
@@ -52,7 +52,7 @@ can be found here:  [datasets](https://github.com/oceanhackweek/ohw25_proj_datad
 Build UI, connect llm to one data set for initial testing, extend as far as we can 
 
 ## Results/Findings
-In the works...
+The final marimo dashboard can be found in the final_notebooks folder. This dashboard comprises of interactive map and a chatbot to select and run analysis on chosen data. All users must have an HF token key from Hugging Face: https://huggingface.co/
 
 ## Lessons Learned
 Lots of moving parts in this project! Difficult to track keep track of/connect components. Marimo was hyped... but proved difficult. We are not about it. Keep your API keys hidden and protect your pennies.

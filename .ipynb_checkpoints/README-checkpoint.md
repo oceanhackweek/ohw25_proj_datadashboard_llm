@@ -1,59 +1,61 @@
-# ohwyy_proj_template
+# ohw25_proj_datadashboard_llm
 
-Template for starting Oceanhackweek project repos. 
+**Repo Structure**
 
-This repo is an example of how teams can structure their project repositories and format their project README.md file, but feel free to adapt as suits your needs.
+* `contributor_folders` temp folder fors individual work
 
-**Folder Structure**
+* `final_notebooks`:  
+  - `marimo_notebook` notebook to access dashboard  
+  - `llm_working_tutorial` to show the working flow of LLM  
+  - `demo` example/demo notebooks  
 
-* `contributor_folders` (optional) Each contributor can make a folder here and 
-push their work here during the week. This will allow everyone to see each others work but prevent any merge conflicts. It is good if participants are new to collaborative coding.
-* `final_notebooks` When the team develops shared final notebooks, they 
-can be shared here. Make sure to communicate so that you limit merge conflicts.
-* `scripts` Shared scripts or functions can be added here.
-* `data` Shared dataset can be shared here. Note, do not put large datasets on GitHub. Speak to the organizers if you 
-need to share large datasets. Each team member can have a version of the dataset locally in the same folder to 
-preserve relative paths, but the dataset does not need to be added to git/GitHub (you can use `.gitignore`).
+* `scripts` backend python scripts to control data access, tools available to the model, etc
+* `data` data will all be cloud accessed. Will add links to cloud buckets once we have decided on which dataset we want to incorporate
 
-You can start with a simple structure and as you progress you can refine it to contain more components. [Here](https://cookiecutter-data-science.drivendata.org/#directory-structure) is an example of a more elaborate structure for a data science project.
+## Data Dashboard powered by LLM:
 
-## Project Name
-Data Dashboard LLM
+### Planning
+This reppository hold all code needed to run our LLM-powered climate data analysis dashboard. The project is in its early stages but will consistent of an app interface (containing interactive map, text box, and model output return) as well as a backend for LLM-driven data loading, visualization, and analysis. 
 
-## One-line Description
-Use LLM to automatically visualize datasets on a dashboard (chat)
+* Check out the preliminary code structure here: https://www.figma.com/community/file/1539761856510676831
+* Ideation Presentation: Not yet available
+* Slack channel: ohw25_proj_llm
+* Project google drive: Not yet available
+* Final presentation: Not yet available
 
 
-## Planning
-
-## Collaborators
+### Collaborators
 
 | Name                | Role                |
 |---------------------|---------------------|
-| Participant 1       | Project Facilitator |
-| Participant 2       | Participant         |
-| Participant 3       | Participant         |
+| Boris Shapkin       | Project Facilitator |
+| Liangtong Wei       | Participant         |
+| Finn Wimberly       | Participant         |
+| Ava Wessel          | Participant         |
+| Aidan Lewis         | Participant         |
+| Dinal Meecle        | Participant         |
 
-## Planning
+![Group photo](./photo/whiteboard_group.jpg)
 
-* Initial idea: "short description"
-* Ideation jam board: Add link
-* Ideation Presentation: Add link
-* Slack channel: ohw25_proj_name
-* Project google drive: Add link
-* Final presentation: Add link
+
 
 ## Background
+Boris has some chatbot experience... the rest of us are comfortable with python and excited to learn 
 
 ## Goals
+Have a functioning interactive dashboard
 
 ## Datasets
+can be found here:  [datasets](https://github.com/oceanhackweek/ohw25_proj_datadashboard_llm/blob/main/data/dataset_track.ipynb)
 
 ## Workflow/Roadmap
+Build UI, connect llm to one data set for initial testing, extend as far as we can 
 
 ## Results/Findings
+The final marimo dashboard can be found in the final_notebooks folder. This dashboard comprises of interactive map and a chatbot to select and run analysis on chosen data. All users must have an HF token key from Hugging Face: https://huggingface.co/
 
 ## Lessons Learned
+Lots of moving parts in this project! Difficult to track keep track of/connect components. Marimo was hyped... but proved difficult. We are not about it. Keep your API keys hidden and protect your pennies.
 
 ## References
-
+In the works...
