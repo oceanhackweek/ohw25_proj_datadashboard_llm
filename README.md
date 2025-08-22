@@ -7,8 +7,8 @@
 * `final_notebooks`:  
   - `final_dashboard.py` Marimo dashboard  
   - `llm_working_tutorial` demonstration of the working flow of LLM --> plotting  
-  - `functions`
-  - `txt_docs` 
+  - `functions` helper functions of our project
+  - `txt_docs` example functions that agent can use
 
 * `scripts` backend python scripts to control data access, tools available to the model, etc
 * `data` data will all be cloud accessed. Access can be found in `dataset_track.ipynb` within this folder.
