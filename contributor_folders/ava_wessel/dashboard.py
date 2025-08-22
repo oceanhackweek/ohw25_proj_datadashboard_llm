@@ -32,7 +32,6 @@ def _():
         ChatOpenAI,
         ChatPromptTemplate,
         MessagesPlaceholder,
-        StrOutputParser,
         create_tool_calling_agent,
         hf_config,
         mo,
@@ -109,12 +108,11 @@ def _(mo):
 
 @app.cell
 def _(widget):
-    point_selected = 0,0
-    x,y = 0,0
-    if len(widget.value["clicked"]) > 0 :
-        point_selected = widget.value["clicked"]['coordinate']
-        x, y = point_selected
-    return point_selected, x, y
+    x , y = 0, 0
+    point_selected2 = widget.value.get("clicked", {}).get("coordinate", [0, 0])
+    if point_selected2:
+        x, y = widget.value.get("clicked", {}).get("coordinate", [0, 0])
+    return x, y
 
 
 @app.cell
@@ -155,47 +153,12 @@ def _(mo):
 @app.cell
 def _(text_area):
     user_key = text_area.value.strip()
-    return (user_key,)
+    return
 
 
 @app.cell
 def _():
     return
-
-
-@app.cell
-def _(ChatOpenAI, ChatPromptTemplate, StrOutputParser, mo, user_key, widget):
-    def my_model(messages, widget):
-        HF_TOKEN = user_key
-
-        map_frame = widget.value["view_state"]["extent"]
-        point_selected = widget.value['clicked']['coordinate']
-        min_lon, min_lat, max_lon, max_lon = map_frame
-        x, y = point_selected
-
-        llm = ChatOpenAI(
-            base_url="https://router.huggingface.co/v1",
-            api_key=HF_TOKEN,
-            model="openai/gpt-oss-20b:fireworks-ai"
-        )
-        question = messages[-1].content
-
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", "You are an AI assistant that will answer questions about the area selected in the map."
-                       f"The current map boundaries are: {map_frame} that the user can draw."
-            f"users can ask what current map boundaries are provided by {min_lon, min_lat, max_lon, max_lon}"
-            f"users can ask you about the specific coordinates selected {point_selected}"),
-            ("human", "{question}")
-        ])
-
-        chain = prompt | llm | StrOutputParser()
-
-        response = chain.invoke({"question": "{question}"})
-
-        return response
-
-    mo.ui.chat(lambda messages: my_model(messages, widget))
-    return (my_model,)
 
 
 @app.cell
@@ -207,8 +170,6 @@ def _(
     create_tool_calling_agent,
     hf_config,
     mo,
-    my_model,
-    point_selected,
     widget,
 ):
     def my_model2(messages, widget):
@@ -217,10 +178,7 @@ def _(
         hf_config.set_hf_token(my_token)
 
         map_frame = widget.value["view_state"]["extent"]
-        if len(point_selected) > 1 :
-            point_selected = widget.value['clicked']['coordinate']
-        else:
-            point_selected = list([0, 0])
+        point_selected = widget.value.get("clicked", {}).get("coordinate", [0, 0])
 
         from adviser_tool import create_adviser_tool
         adviser_tool_llm = create_adviser_tool()
@@ -250,7 +208,7 @@ def _(
         result = agent_executor.invoke({"input": question})
         return result
 
-    mo.ui.chat(lambda messages: my_model(messages, widget))
+    mo.ui.chat(lambda messages: my_model2(messages, widget))
     return
 
 
