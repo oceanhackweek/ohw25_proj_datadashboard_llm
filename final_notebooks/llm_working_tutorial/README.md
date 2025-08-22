@@ -77,19 +77,25 @@ cd final_notebooks/llm_working_tutorial
 python -m venv env
 source env/bin/activate           # macOS/Linux
 # .\env\Scripts\activate          # Windows PowerShell
-
+```
+```bash
 # (option B) conda
 # conda create -n ohw-llm python=3.11 -y
 # conda activate ohw-llm
+```
 
 ### 2️⃣ Install dependencies
+```bash
 pip install -U pip
 pip install jupyterlab xarray fsspec s3fs gcsfs zarr pandas numpy python-dotenv
 # Optional (LLM features)
 # pip install openai huggingface_hub requests
+```
 
 ### 3️⃣ Create a local .env file 
 In the same folder (llm_working_tutorial/), create a file named .env:
+
+```bash
 # .env  (do NOT commit this file)
 
 # Hugging Face API key (if using HF inference models)
@@ -99,18 +105,24 @@ HF_TOKEN=hf_**************************************
 OPENAI_API_KEY=sk-********************************
 
 # Add any other cloud storage creds here if needed
+```
 
 The notebook will load these automatically with:
+
+```bash
 from dotenv import load_dotenv
 load_dotenv()
+```
 
 ### 4️⃣ Launch Jupyter and run the notebook
+```bash
 jupyter lab
 # or: jupyter notebook
+```
 
 ## 📊 How the Catalog Works
 
-datasets.json defines datasets with:
+*`datasets.json` defines datasets with:
 
 name → human-readable key
 
@@ -118,11 +130,7 @@ path → location (e.g. S3/GCS URL)
 
 access_function → loader function in dataset.py
 
-dataset.py provides loader functions such as:
-
-load_mur(...) → GHRSST MUR (public S3)
-
-load_indian_ocean(...) → IO.zarr on GCS
+*`dataset.py` provides loader functions such as:
 
 load_climate_data(...) → generic fallback/dispatcher
 
@@ -130,15 +138,19 @@ load_climate_data(...) → generic fallback/dispatcher
 
 Always ignore secrets and environments. Add this to .gitignore:
 
+```bash
 # environments & secrets
 env/
 .env
 *.env
+```
 
 If a secret was committed accidentally: revoke it immediately, then remove with:
+```bash
 git rm --cached .env
 git commit -m "Remove accidentally committed secrets"
 git push
+```
 
 ## 📜 License / Credit
 
