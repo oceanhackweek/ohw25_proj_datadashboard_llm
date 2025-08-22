@@ -33,7 +33,7 @@ def _():
 
 @app.cell
 def _(load_agent_executor):
-    token = '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'
+    token = ''
     executor = load_agent_executor(token)
     return (token,)
 
