@@ -3,8 +3,11 @@
 **Repo Structure**
 
 * `contributor_folders` temp folder fors individual work
-* `final_notebooks`: `marimo notebook` to access dashboard
-                     `llm_working_tutorial` to show the working flow of LLM
+
+* `final_notebooks`:  
+  - `marimo_notebook` notebook to access dashboard  
+  - `llm_working_tutorial` to show the working flow of LLM  
+  - `demo` example/demo notebooks  
 
 * `scripts` backend python scripts to control data access, tools available to the model, etc
 * `data` data will all be cloud accessed. Will add links to cloud buckets once we have decided on which dataset we want to incorporate
