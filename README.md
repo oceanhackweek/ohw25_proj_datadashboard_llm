@@ -49,9 +49,9 @@ temperature in some region, sea level anomaly time series in a year, etc)
 can be found here:  [datasets](https://github.com/oceanhackweek/ohw25_proj_datadashboard_llm/blob/main/data/dataset_track.ipynb)
 
 ## Workflow/Roadmap
-|UI                     -----> |LLM(Large Language Model)              ----->  |Create Plot
+|UI                     ----->  |LLM(Large Language Model)              ----->    |Create Plot                                      |
 
-Use Marimo to build dashboard, connect llm to one data set for initial testing, extend as far as we can to achieve the **Goals**.
+|Use Marimo to build dashboard, |connect llm to one data set for initial testing, |extend as far as we can to achieve the **Goals**.|
 
 ## Results/Findings
 The final marimo dashboard can be found in the `final_notebooks` folder. 
