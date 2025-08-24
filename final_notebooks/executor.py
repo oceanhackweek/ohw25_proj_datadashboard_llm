@@ -16,7 +16,7 @@ def load_agent_executor(token: str):
 
     tools = [
         advisor_tool,
-        loader_tool,
+        #loader_tool,
         repl_tool
     ]
 

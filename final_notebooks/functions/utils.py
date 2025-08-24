@@ -32,24 +32,15 @@ def get_prompt():
             
             **Step 1: Advise**
             - Use the `advisor_tool` to identify the best dataset and variable(s) for the user's request.
-            - If the advisor finds no suitable data, you MUST stop and inform the user that their request cannot be fulfilled.
+            - If the advisor finds no suitable data, you MUST stop and inform the user that their request cannot be fulfilled. DO NOT continue
+
             
-            **Step 2: Load Data**
-            - Use the `loader_tool` with the exact dataset and variable names from Step 1.
-            - This tool will return a local `file_path` (e.g., "temp/data.nc"). This path is critical for the next step.
-            
-            **Step 3: Analyze Data**
+            **Step 2: Analyze Data**
+            - based on the `advisor_tool`'s suggestion, read the appropriate file.
             - Use the `python_repl` tool to write and execute code for the analysis.
-            - Follow the critical rule below.
             - After the code generates output (like a plot), provide a brief, clear description of the result.
             
             ---
-            [CRITICAL RULE FOR STEP 3: ANALYSIS]
-            
-            **When you use the `python_repl` tool, your code MUST use the `file_path` provided by the `loader_tool` from Step 2.**
-            
-            - Your Python code should always begin by opening this specific path (e.g., `ds = xarray.open_dataset("temp/data.nc")`).
-            - **DO NOT** attempt to re-download, re-load, or access data from any other source or path inside the `python_repl` tool. The data is already prepared for you.
         """
         ),
         ("user", "{input}"),

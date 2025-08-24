@@ -11,6 +11,8 @@ def _():
     import openlayers as ol
     from shapely.geometry import box
     import os
+
+    os.chdir(path='/home/jovyan/ohw25_proj_datadashboard_llm/final_notebooks')
     from langchain_community.vectorstores import Chroma
     from langchain.prompts import ChatPromptTemplate
     from langchain.chains import ConversationalRetrievalChain
@@ -21,40 +23,13 @@ def _():
     from langchain.agents import AgentExecutor, create_tool_calling_agent
     import json
     import hf_config
+    from executor import load_agent_executor
 
 
     current_directory = os.getcwd()
     print(current_directory)
     from dotenv import load_dotenv
-    return (
-        AgentExecutor,
-        ChatOpenAI,
-        ChatPromptTemplate,
-        MessagesPlaceholder,
-        create_tool_calling_agent,
-        hf_config,
-        mo,
-        ol,
-    )
-
-
-@app.cell
-def _(hf_config):
-    # Set token once in your notebook
-    my_token = ''
-    hf_config.set_hf_token(my_token)
-    LANGSMITH_TRACING="true"
-    LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
-    LANGSMITH_API_KEY=''
-    LANGSMITH_PROJECT="ohw_llm"
-    return
-
-
-@app.cell
-def _():
-    from db_creation import create_db_examples
-    vector_store_hf = create_db_examples()
-    return
+    return hf_config, load_agent_executor, mo, ol, os
 
 
 @app.cell
@@ -64,13 +39,17 @@ def _(mo):
     <div style="display: flex; align-items: center; justify-content: center; gap: 12px; background: #f0f9ff; padding: 5px; border-radius: 10px;">
         <img src="https://oceanhackweek.org/_static/logo.png" 
              alt="Logo" width="60" height="60">
-        <span style="font-family: Arial, Helvetica, sans-serif; 
+        <span style="font-family: monospace; 
                      font-size: 48px; 
                      font-weight: 700; 
-                     color: #002147; 
-                     line-height: 1;">
-            Data Dashboard with Chatbot
+                     color: black; 
+                     line-height: 0.5;">
+            SplashBot
         </span>
+        1.0
+        <img src="https://cdn-icons-png.flaticon.com/512/6501/6501379.png" 
+             alt="Logo" width="100" height="90">
+
     </div>
     """
     )
@@ -96,9 +75,9 @@ def _(mo):
     mo.md(
         r"""
     <div style="gap: 30px;">
-      <h1 style="font-family: Arial, sans-serif; font-size: 12px; color: lightseagreen; margin: 0; 
+      <h1 style="font-family: Arial, sans-serif; font-size: 15px; color: lightseagreen; margin: 0; 
                  background: #f0f9ff; padding: 8px; font-weight: bold; border-radius: 10px;
-                 display: flex; align-items: center; gap: 6px;">
+                 display: flex; align-items: center; gap: 10px;">
         <img src="https://cdn-icons-png.flaticon.com/512/2976/2976128.png" 
              alt="Logo" width="25" height="0">
         Explore the map by dragging and zooming, or click any location to analyze its data. Use the chatbot for instant insights and comparisons.
@@ -152,9 +131,9 @@ def _(mo):
     mo.md(
         r"""
     <div style="gap: 12px;">
-      <h1 style="font-family: Arial, sans-serif; font-size: 12px; color: lightseagreen; margin: 0; 
+      <h1 style="font-family: Arial, sans-serif; font-size: 15px; color: lightseagreen; margin: 0; 
                  background: #f0f9ff; padding: 8px; font-weight: bold; border-radius: 10px;
-                 display: flex; align-items: center; gap: 6px;">
+                 display: flex; align-items: center; gap: 10px;">
         <img src="https://cdn-icons-png.flaticon.com/512/2976/2976128.png" 
              alt="Logo" width="25" height="40">
         Please provide HF token to run the Chatbot.
@@ -175,67 +154,121 @@ def _(mo):
 @app.cell
 def _(text_area):
     user_key = text_area.value.strip()
-    return
+    return (user_key,)
 
 
 @app.cell
-def _():
-    return
+def _(hf_config, load_agent_executor, mo, os, user_key, widget):
 
+    import re
+    from PIL import Image
+    import glob
 
-@app.cell
-def _(
-    AgentExecutor,
-    ChatOpenAI,
-    ChatPromptTemplate,
-    MessagesPlaceholder,
-    create_tool_calling_agent,
-    hf_config,
-    mo,
-    widget,
-):
-    def my_model2(messages, widget):
-        question = messages[-1].content   
-        my_token = ''
-        hf_config.set_hf_token(my_token)
+    def clear_figures_folder():
+        """Delete all PNG files from the figures_temp directory"""
+        if os.path.exists('figures_temp'):
+            png_files = glob.glob('figures_temp/*.png')
+            for file_path in png_files:
+                try:
+                    os.remove(file_path)
+                    print(f"Deleted: {file_path}")
+                except Exception as e:
+                    print(f"Error deleting {file_path}: {e}")
+            print(f"Cleared {len(png_files)} files from figures_temp")
 
-        map_frame = widget.value["view_state"]["extent"]
-        point_selected = widget.value.get("clicked", {}).get("coordinate", [0, 0])
+    def my_model2(messages, widget):    
+        question = messages[-1].content    
 
-        from adviser_tool import create_adviser_tool
-        adviser_tool_llm = create_adviser_tool()
-        tools = [adviser_tool_llm]
-        prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", f"You are an expert in climate data analysis, you have adviser tool, which can help you to asnwer user's questions about variables/datasets. If the question about data, use only information from adviser_tool. If the {map_frame} or {point_selected} is not [0,0], answer questions about the data from this selected area. "),
-                ("user", "{input}"),
-                MessagesPlaceholder(variable_name="agent_scratchpad"),
-            ]
-        )
-        llm = ChatOpenAI(
-            base_url="https://router.huggingface.co/v1",
-            api_key=hf_config.get_hf_token(),
-            model="openai/gpt-oss-120b:fireworks-ai"  
-        )
+        # Clear all existing figures at the start of each new question
+        clear_figures_folder()
 
-        # Define the agent
-        agent = create_tool_calling_agent(
-            llm=llm,
-            tools=tools,
-            prompt=prompt,
-        )
+        my_token = user_key
+        hf_config.set_hf_token(my_token)    
+        executor = load_agent_executor(my_token)    
+        map_frame = widget.value["view_state"]["extent"]    
+        point_selected = widget.value.get("clicked", {}).get("coordinate", [0, 0])    
 
-        # Create the executor
-        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-        result = agent_executor.invoke({"input": question})
-        return result
+        if point_selected != [0,0]:        
+            point_selected = point_selected + [point_selected[0] + 1, point_selected[1] + 1]    
 
+        # Create the executor    
+        remark = f'If the {map_frame} or {point_selected} is not [0,0], answer questions about the data from this selected area.'    
+        result = executor.invoke({"input": question + remark})
+
+        # Extract figure paths from this execution
+        figure_paths = extract_figure_paths(result)
+
+        # Create response with figures
+        response_content = []
+
+        # Add the text response
+        response_content.append(mo.md(str(result)))
+
+        # Show only the last (most recent) figure generated in this execution
+        if figure_paths:
+            last_figure_path = figure_paths[-1]  # Get the most recent figure
+            response_content.append(mo.md("### Generated Figure:"))
+            if os.path.exists(last_figure_path):
+                try:
+                    # Display only the last image
+                    img = Image.open(last_figure_path)
+                    response_content.append(mo.image(src=last_figure_path, alt=f"Generated plot: {os.path.basename(last_figure_path)}"))
+                except Exception as e:
+                    response_content.append(mo.md(f"Error loading image {last_figure_path}: {str(e)}"))
+            else:
+                response_content.append(mo.md(f"Figure not found: {last_figure_path}"))
+
+        # Return combined content
+        return mo.vstack(response_content) if response_content else result
+
+    def extract_figure_paths(result_text):
+        """Extract figure paths from the executor result and scan directory for new files"""
+        # Convert result to string if it's not already
+        result_str = str(result_text)
+
+        # Multiple patterns to catch different ways figures might be mentioned
+        patterns = [
+            r'figures_temp/plot_\d+_\d+_\d+_fig\d+\.png',  # Original pattern
+            r'figures_temp/[^/\s]+\.png',  # Any PNG in figures_temp
+            r'Figure saved to:\s*([^\n\r]+\.png)',  # Saved to pattern
+            r'([^\s]+\.png)',  # Any PNG file mentioned
+            r'saved to:\s*([^\n\r]+)',  # General saved to pattern
+        ]
+
+        found_paths = []
+        for pattern in patterns:
+            matches = re.findall(pattern, result_str)
+            found_paths.extend(matches)
+
+        # Also scan the figures_temp directory for any new PNG files
+        if os.path.exists('figures_temp'):
+            all_pngs = glob.glob('figures_temp/*.png')
+            found_paths.extend(all_pngs)
+
+        # Clean up paths and filter for existing files with reasonable content
+        valid_paths = []
+        for path in found_paths:
+            clean_path = path.strip()
+
+            # Ensure it's a proper path
+            if not clean_path.endswith('.png'):
+                continue
+
+            if os.path.exists(clean_path):
+                # Check if the file has reasonable size (not empty plot)
+                file_size = os.path.getsize(clean_path)
+                if file_size > 1000:  # Lowered threshold - even small plots should be > 1KB
+                    if clean_path not in valid_paths:
+                        valid_paths.append(clean_path)
+
+        # Sort by modification time to get chronological order
+        if valid_paths:
+            valid_paths.sort(key=lambda x: os.path.getmtime(x))
+
+        return valid_paths
+
+    # Create the chat interface
     mo.ui.chat(lambda messages: my_model2(messages, widget))
-    return
-
-
-@app.cell
-def _():
     return
 
 
